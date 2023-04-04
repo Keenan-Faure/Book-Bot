@@ -37,6 +37,9 @@ def main():
         sorted_list = list((count_letters(file_contents)).keys())
         sorted_list.sort()
         for letter in sorted_list:
+            #uncomment to enable count for undefined_letters
+            # if(letter == "undefined_letters"):
+            #     continue
             print("The '" + letter + "'character was found " + str(letter_count[letter]) + " times")
         print("--- End report ---")
 main()

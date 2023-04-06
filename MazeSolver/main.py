@@ -103,52 +103,82 @@ class Cell:
         self._y2             = _y2
         self._win            = _win
     
-    def draw(self):
+    def update_points(self, top_left_x1, top_left_y1, bottom_right_x1, bottom_right_y1):
+        self._x1 += top_left_x1
+        self._y1 += top_left_y1
+        self._x2 += bottom_right_x1
+        self._y2 += bottom_right_y1
+    
+    def draw_move(self, to_cell, undo=False):
+        #gets mid points for two cells
+        p1_mid_point = self.calc_midpoint()
+        to_cell_mid_point = to_cell.calc_midpoint()
+
+        #creates and draws the lines
+        line = Line(p1_mid_point,to_cell_mid_point)
+        if(undo == None):
+            line.draw(self._win.get_canvas(), "red")
+        else:
+            line.draw(self._win.get_canvas(), "grey")
+
+    def calc_midpoint(self):
+        x_1 = (self._x1 + self._x2) / 2
+        y_1 = (self._y1 + self._y2) / 2
+        mid_point = Point(x_1, y_1)
+        return mid_point
+        
+    def draw(self, top_left_x1, top_left_y1, bottom_right_x1, bottom_right_y1):
+        # self.update_points(top_left_x1, top_left_y1, bottom_right_x1, bottom_right_y1)
+
         if(self.has_left_wall):
-            if(self._x1 != None and self._y1 != None):
-                first_point = Point(self._x1,0)
-                second_point = Point(0, self._y1)
-                line = Line(first_point,second_point)
-                line.draw(self._win.get_canvas(), "red")
+            first_point = Point(self._x1, top_left_y1)
+            second_point = Point(self._x2, self._y2)
+            line = Line(first_point,second_point)
+            line.draw(self._win.get_canvas(), "red")
 
         if(self.has_right_wall):
-            if(self._x2 != None and self._y2 != None):
-                first_point = Point(self._x2,0)
-                second_point = Point(0, self._y2)
-                line = Line(first_point,second_point)
-                line.draw(self._win.get_canvas(), "red")
+            first_point = Point(top_left_x1,self._y1)
+            second_point = Point(bottom_right_x1, bottom_right_y1)
+            line = Line(first_point,second_point)
+            line.draw(self._win.get_canvas(), "red")
 
         if(self.has_top_wall):
-            if(self._y1 != None and self._y2 != None):
-                first_point = Point(0, self._y1)
-                second_point = Point(0, self._y2)
-                line = Line(first_point,second_point)
-                line.draw(self._win.get_canvas(), "red")
+            first_point = Point(self._x1, self._y1)
+            second_point = Point(bottom_right_x1, self._y2)
+            line = Line(first_point,second_point)
+            line.draw(self._win.get_canvas(), "red")
             
         if(self.has_bottom_wall):
-            if(self._x1 != None and self._x2 != None):
-                first_point = Point(self._x1, 0)
-                second_point = Point(self._x2, 0)
-                line = Line(first_point,second_point)
-                line.draw(self._win.get_canvas(), "red")
+            first_point = Point(self._x1, top_left_y1)
+            second_point = Point(bottom_right_x1, bottom_right_y1)
+            line = Line(first_point,second_point)
+            line.draw(self._win.get_canvas(), "red")
 
 #Main function
 def main():
     win = Window(300, 300)
-    # tests for line drawing
-    # first_point  = Point(10, 20)
-    # second_point = Point(20, 40)
 
-    # for iterator in range(10):
-    #     first_point = Point(2 * iterator, 5 * iterator)
-    #     second_point = Point(7 *  iterator, 12 * iterator)
-    # cell = Cell(True, True, True, True, 10, 100, 50, 100, win)
-    # cell.draw()
-    # win.wait_for_close()
-    first_point = Point(0, 0)
-    second_point = Point(0, 0)
-    line =  Line(first_point, second_point)
-    line.draw(win.get_canvas(), "red")
+    # cell format is left, right, top, bottom
+    # draw format is 
+    # top_left_x, top_left_y, bottom_right_x, bottom_right_y
+
+    #to move Diagonally - increase all size + 50
+    #to move to the right - increase only top_left_x & bottom_right_x + 50
+    #to move downwards - increase only top_left_y & bottom_right_y + 50
+
+    cell = Cell(True, True, True, False, 0, 0, 0, 0, win)
+    cell.draw(50, 50, 50, 50)
+
+    cell2 = Cell(True, True, False, False, 50, 50, 50, 50, win)
+    cell2.draw(0, 100, 0, 100)
+    cell.draw_move(cell2)
+
+    cell3 = Cell(True, False, True, True, 100, 100, 100, 100, win)
+    cell3.draw(150, 150, 150, 150)
+
+    # cell3 = Cell(True, False, False, True, 0, 0, 0, 0, win)
+    # cell3.draw(50, 100, 50, 100)
+
     win.wait_for_close()
 
 main()

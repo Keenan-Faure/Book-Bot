@@ -238,6 +238,19 @@ class Maze:
         self._cells[i][j].draw(x1_pos, y1_pos, x2_pos, y2_pos)
         self._animate()
     
+    def _pos_to_pixel(self, i, j):
+        if((i-self.x1) == 0):
+            x_pos = 0
+        else:
+            x_pos = (i - self.x1) / (self.cell_size_x)
+
+        if((j-self.y1) == 0):
+            y_pos = 0
+        else:
+            y_pos = (j - self.y1) / (self.cell_size_y)
+        return [int(x_pos), int(y_pos)]
+
+
     def _animate(self):
         self.win.redraw()
         time.sleep(0.5)
@@ -265,37 +278,130 @@ class Maze:
             self._draw_cell(row_len,col_len)
 
     def _break_walls_r(self, i, j):
-        # self._cells[i-1][j-1].visited = True
+        self._cells[i-1][j-1].visited = True
 
-        for x in range(i):
-            for y in range(j):
+        #adding reversed to start from the numbers entered
+        for x in reversed(range(i)):
+            for y in reversed(range(j)):
+                #possible_visit format is: 
+                # {
+                #   "pos": "",
+                #   "cell" ""
+                # }
                 possible_visit = []
                 print("Current x: " + str(x) + " | y: " + str(y))
                 #top cell
                 if(y-1 >= 0): 
                     if(self._cells[x][y-1].visited == False):
-                        possible_visit.append(self._cells[x][y-1])
+                        cell_dict = {
+                            "post": "top",
+                            "cell": self._cells[x][y-1],
+                            "x": x,
+                            "y": y-1
+                        }
+                        possible_visit.append(cell_dict)
                         print("top | x: " + str(x) + " | y: " + str(y-1))
 
                 #left cell
                 if(x-1 >= 0): 
                     if(self._cells[x-1][y].visited == False):
-                        possible_visit.append(self._cells[x-1][y])
+                        cell_dict = {
+                            "post": "left",
+                            "cell": self._cells[x-1][y],
+                            "x": x-1,
+                            "y": y
+                        }
+                        possible_visit.append(cell_dict)
                         print("left | x: " + str(x-1) + " | y: " + str(y))
 
                 #right cell
                 if(x+1 <= i-1 and x+1 >= 0): 
                     if(self._cells[x+1][y].visited == False):
-                        possible_visit.append(self._cells[x+1][y])
+                        cell_dict = {
+                            "post": "right",
+                            "cell": self._cells[x+1][y],
+                            "x": x+1,
+                            "y": y
+                        }
+                        possible_visit.append(cell_dict)
                         print("right | x: " + str(x+1) + " | y: " + str(y))
 
                 #bottom cell
                 if(y+1 <= j-1 and y+1 >= 0): 
                     if(self._cells[x][y+1].visited == False):
-                        possible_visit.append(self._cells[x][y+1])
+                        cell_dict = {
+                            "post": "bottom",
+                            "cell": self._cells[x][y+1],
+                            "x": x,
+                            "y": y+1
+                        }
+                        possible_visit.append(cell_dict)
                         print("bottom | x: " + str(x) + " | y: " + str(y+1))
+
                 print(len(possible_visit))
 
+                #no more places to go to
+                if(len(possible_visit) == 0):
+                    #draw current cell
+                    print("Currently here with no exit xd |  x: " + str(x) + " | y: " + str(y))
+                    self._cells[i-1][j-1].draw(
+                        self._cells[i-1][j-1]._x1,
+                        self._cells[i-1][j-1]._y1,
+                        self._cells[i-1][j-1]._x2,
+                        self._cells[i-1][j-1]._y2
+                    )
+                    return
+                else:
+                    #random direction
+                    direction = int(random.randrange(len(possible_visit)))
+                    self._break_down_walls_between(
+                        self._cells[i-1][j-1],
+                        possible_visit[direction]["cell"], 
+                        possible_visit[direction]["post"]
+                    )
+                    self._break_walls_r(possible_visit[direction]["x"],possible_visit[direction]["y"])
+
+
+    def _break_down_walls_between(self, this_cell: Cell, other_cell: Cell, direction: str):
+        if(str(direction) == "top"):
+            #top wall of current & bottom of other
+            this_cell.has_top_wall = False
+            x_y = self._pos_to_pixel(this_cell._x1, this_cell._y1)
+            self._draw_cell(x_y[0], x_y[1])
+
+            other_cell.has_bottom_wall = False
+            x_y_2 = self._pos_to_pixel(other_cell._x1, other_cell._y1)
+            self._draw_cell(x_y_2[0], x_y_2[1])
+
+        elif(str(direction) == "left"):
+            #left wall of current & right wall of other
+            this_cell.has_left_wall = False
+            x_y = self._pos_to_pixel(this_cell._x1, this_cell._y1)
+            self._draw_cell(x_y[0], x_y[1])
+
+            other_cell.has_right_wall = False
+            x_y_2 = self._pos_to_pixel(other_cell._x1, other_cell._y1)
+            self._draw_cell(x_y_2[0], x_y_2[1])
+
+        elif(str(direction) == "right"):
+            #right wall of current & left of other
+            this_cell.has_right_wall = False
+            x_y = self._pos_to_pixel(this_cell._x1, this_cell._y1)
+            self._draw_cell(x_y[0], x_y[1])
+
+            other_cell.has_left_wall = False
+            x_y_2 = self._pos_to_pixel(other_cell._x1, other_cell._y1)
+            self._draw_cell(x_y_2[0], x_y_2[1])
+
+        elif(str(direction) == "bottom"):
+            #bottom wall of current & top of other
+            this_cell.has_bottom_wall = False
+            x_y = self._pos_to_pixel(this_cell._x1, this_cell._y1)
+            self._draw_cell(x_y[0], x_y[1])
+
+            other_cell.has_top_wall = False
+            x_y_2 = self._pos_to_pixel(other_cell._x1, other_cell._y1)
+            self._draw_cell(x_y_2[0], x_y_2[1])
                 
 
 
@@ -326,13 +432,15 @@ def main():
     # cell5.draw(50,100,100,150)
     # cell4.draw_move(cell5)
 
-    maze = Maze(5,5,3,3,50,50,win)
+    maze = Maze(5,5,5,5,50,50,win)
 
     for x in range(maze.num_rows):
             for y in range(maze.num_cols):
                 maze._draw_cell(x, y)
 
+    # maze._break_entrance_and_exit()
     maze._break_walls_r(maze.num_rows, maze.num_cols)
+    # maze._break_down_walls_between(maze._cells[1][1], maze._cells[2][1], "right")
 
     win.wait_for_close()
 

@@ -1,5 +1,5 @@
 #math algorithms
-#searching algorith (BFS)
+#searching algorith (BFS) and DFS
 #unit tests
 #resursive functions
 #importing function
@@ -134,7 +134,7 @@ class Cell:
 
         #creates and draws the lines
         line = Line(p1_mid_point,to_cell_mid_point)
-        if(undo == None):
+        if(undo == False):
             line.draw(self._win.get_canvas(), "red")
         else:
             line.draw(self._win.get_canvas(), "grey")
@@ -202,12 +202,12 @@ class Maze:
 
     def __init__(
             self,
-            x1,
-            y1,
-            num_rows,
-            num_cols,
-            cell_size_x,
-            cell_size_y,
+            x1: int,
+            y1: int,
+            num_rows: int,
+            num_cols: int,
+            cell_size_x: int,
+            cell_size_y: int,
             win: Window=None,
             seed=None
         ):
@@ -230,7 +230,7 @@ class Maze:
         cells = [[Cell(True, True, True, True, 0, 0, 0, 0, self.win) for x in range(self.num_rows)] for y in range(self.num_cols)]
         self._cells = cells
 
-    def _draw_cell(self, i, j):
+    def _draw_cell(self, i:int, j:int):
         x1_pos = ((i) * self.cell_size_x) + self.x1
         y1_pos = ((j) * self.cell_size_y) + self.y1
         x2_pos = ((i + 1) * self.cell_size_x) + self.x1
@@ -276,90 +276,97 @@ class Maze:
             last_cell.has_bottom_wall = False
 
             self._draw_cell(row_len,col_len)
+    
+    # returns the possible cells to visit
+    # from the current cell
+    # where x,y are the
+    # adjacent cells positions (does checks) and
+    # i,j are the iteration through the maze
+    def get_possible_visit(self, i:int, j:int, x:int, y:int):
+        possible_visit = []
+        #top cell
+        if(y-1 >= 0 and y-1 <= (j-1)): 
+            if(self._cells[x][y-1].visited == False):
+                cell_dict = {
+                    "post": "top",
+                    "cell": self._cells[x][y-1],
+                    "x": x,
+                    "y": y-1
+                }
+                possible_visit.append(cell_dict)
+                print("top | x: " + str(x) + " | y: " + str(y-1))
 
-    def _break_walls_r(self, i, j):
+        #left cell
+        if(x-1 >= 0 and x-1 <= (i-1)): 
+            if(self._cells[x-1][y].visited == False):
+                cell_dict = {
+                    "post": "left",
+                    "cell": self._cells[x-1][y],
+                    "x": x-1,
+                    "y": y
+                }
+                possible_visit.append(cell_dict)
+                print("left | x: " + str(x-1) + " | y: " + str(y))
+
+        #right cell
+        if(x+1 <= i-1 and x+1 >= 0): 
+            if(self._cells[x+1][y].visited == False):
+                cell_dict = {
+                    "post": "right",
+                    "cell": self._cells[x+1][y],
+                    "x": x+1,
+                    "y": y
+                }
+                possible_visit.append(cell_dict)
+                print("right | x: " + str(x+1) + " | y: " + str(y))
+
+        #bottom cell
+        if(y+1 <= j-1 and y+1 >= 0): 
+            if(self._cells[x][y+1].visited == False):
+                cell_dict = {
+                    "post": "bottom",
+                    "cell": self._cells[x][y+1],
+                    "x": x,
+                    "y": y+1
+                }
+                possible_visit.append(cell_dict)
+                print("bottom | x: " + str(x) + " | y: " + str(y+1))
+
+        return possible_visit
+
+    def _break_walls_r(self, i: int, j: int):
         self._cells[i-1][j-1].visited = True
 
         #adding reversed to start from the numbers entered
         for x in reversed(range(i)):
             for y in reversed(range(j)):
-                #possible_visit format is: 
-                # {
-                #   "pos": "",
-                #   "cell" ""
-                # }
                 possible_visit = []
                 print("Current x: " + str(x) + " | y: " + str(y))
-                #top cell
-                if(y-1 >= 0): 
-                    if(self._cells[x][y-1].visited == False):
-                        cell_dict = {
-                            "post": "top",
-                            "cell": self._cells[x][y-1],
-                            "x": x,
-                            "y": y-1
-                        }
-                        possible_visit.append(cell_dict)
-                        print("top | x: " + str(x) + " | y: " + str(y-1))
 
-                #left cell
-                if(x-1 >= 0): 
-                    if(self._cells[x-1][y].visited == False):
-                        cell_dict = {
-                            "post": "left",
-                            "cell": self._cells[x-1][y],
-                            "x": x-1,
-                            "y": y
-                        }
-                        possible_visit.append(cell_dict)
-                        print("left | x: " + str(x-1) + " | y: " + str(y))
-
-                #right cell
-                if(x+1 <= i-1 and x+1 >= 0): 
-                    if(self._cells[x+1][y].visited == False):
-                        cell_dict = {
-                            "post": "right",
-                            "cell": self._cells[x+1][y],
-                            "x": x+1,
-                            "y": y
-                        }
-                        possible_visit.append(cell_dict)
-                        print("right | x: " + str(x+1) + " | y: " + str(y))
-
-                #bottom cell
-                if(y+1 <= j-1 and y+1 >= 0): 
-                    if(self._cells[x][y+1].visited == False):
-                        cell_dict = {
-                            "post": "bottom",
-                            "cell": self._cells[x][y+1],
-                            "x": x,
-                            "y": y+1
-                        }
-                        possible_visit.append(cell_dict)
-                        print("bottom | x: " + str(x) + " | y: " + str(y+1))
-
-                print(len(possible_visit))
+                possible_visit = self.get_possible_visit(i, j, x, y)
 
                 #no more places to go to
                 if(len(possible_visit) == 0):
+                    print("Currently here with no exit xd |  x: " + str(i) + " | y: " + str(j))
                     #draw current cell
-                    print("Currently here with no exit xd |  x: " + str(x) + " | y: " + str(y))
                     self._cells[i-1][j-1].draw(
                         self._cells[i-1][j-1]._x1,
                         self._cells[i-1][j-1]._y1,
                         self._cells[i-1][j-1]._x2,
                         self._cells[i-1][j-1]._y2
                     )
+                    # self._draw_cell(x,y)
                     return
                 else:
                     #random direction
                     direction = int(random.randrange(len(possible_visit)))
+                    direction_real = possible_visit[direction]["post"]
                     self._break_down_walls_between(
                         self._cells[i-1][j-1],
                         possible_visit[direction]["cell"], 
                         possible_visit[direction]["post"]
                     )
-                    self._break_walls_r(possible_visit[direction]["x"],possible_visit[direction]["y"])
+                    self._break_walls_r(possible_visit[direction]["x"]+1,possible_visit[direction]["y"]+1)
 
 
     def _break_down_walls_between(self, this_cell: Cell, other_cell: Cell, direction: str):
@@ -402,8 +409,86 @@ class Maze:
             other_cell.has_top_wall = False
             x_y_2 = self._pos_to_pixel(other_cell._x1, other_cell._y1)
             self._draw_cell(x_y_2[0], x_y_2[1])
+    
+    def _reset_cells_visted(self):
+        for i in range(len(self._cells)):
+            for j in range(len(self._cells[0])):
+                self._cells[i][j].visited = False
+
+    # determines if a wall exists between two cells
+    # before moving
+    # @return bool
+    def _check_exist_wall(self, possible_cell: list, i: int, j:int):
+        if(str(possible_cell["post"]) == "top"):
+            if(self._cells[i][j].has_top_wall == False 
+               and possible_cell["cell"].has_bottom_wall == False):
+                return False
+
+        elif(str(possible_cell["post"]) == "left"):
+            if(self._cells[i][j].has_left_wall == False
+               and possible_cell["cell"].has_right_wall == False):
+                return False
+                
+        elif(str(possible_cell["post"]) == "right"):
+            if(self._cells[i][j].has_right_wall == False
+               and possible_cell["cell"].has_left_wall == False):
+                return False
+
+        elif(str(possible_cell["post"]) == "bottom"):
+            if(self._cells[i][j].has_bottom_wall == False
+               and possible_cell["cell"].has_top_wall == False):
+                return False
+        return True
                 
 
+    def solve(self):
+        print("")
+        print("==== I am trying to Solve now ====")
+        print("")
+        return self._solve_r(0,0)
+
+    def _solve_r(self, i: int, j: int):
+        print("Current Cell | (" + str(i) + "," + str(j) + ")")
+        self._animate()
+        self._cells[i][j].visited = True
+        print("Cell | (" + str(i) + "," + str(j) + ") ---- Marked as visited")
+
+        #for each direction available
+        possible_visits = self.get_possible_visit(self.num_rows, self.num_cols, i, j)
+        print("amount of possible moves: " + str(len(possible_visits)))
+
+        #End cell is the last cell at the bottom of the maze
+        #Starting point is (0,0) and end point is (3,3)
+        if(self._cells[i][j] == self._cells[self.num_rows-1][self.num_cols-1]):
+            return True
+        
+        for index in range(len(possible_visits)):
+            print("We are moving: " + str(possible_visits[index]["post"]))
+            print("Removed first element of possible_visits")
+            print("Possible visits now: " + str(len(possible_visits)))
+
+            #check if there exists a wall between two cells
+
+            #a wall exists, or it has been vistited already
+            if(self._check_exist_wall(possible_visits[index], i, j)):
+                print("A wall exists between: (" + str(i) + "," + str(j) + ") and (" + str(possible_visits[index]["x"]) + "," + str(possible_visits[index]["y"]) + ")")
+                print("Drew an UNDO cells move from: (" + str(i) + "," + str(j) + ") and (" + str(possible_visits[index]["x"]) + "," + str(possible_visits[index]["y"]) + ")")
+                self._cells[i][j].draw_move(possible_visits[index]["cell"], True)
+
+            #no wall, not visited and a cell exists in the direction
+            else:
+                print("NO wall between: (" + str(i) + "," + str(j) + ") and (" + str(possible_visits[index]["x"]) + "," + str(possible_visits[index]["y"]) + ")")
+
+                #draw a move
+                self._cells[i][j].draw_move(possible_visits[index]["cell"])
+                print("Drew a cells_move from: (" + str(i) + "," + str(j) + ") and (" + str(possible_visits[index]["x"]) + "," + str(possible_visits[index]["y"]) + ")")
+                #recursive call on first cell of possibilities
+                if(self._solve_r(possible_visits[index]["x"], possible_visits[index]["y"])):
+                    return True
+
+        if(len(possible_visits) <= 0):
+            print("No directions worked out")
+            return False
 
 #Main function
 def main():
@@ -432,14 +517,16 @@ def main():
     # cell5.draw(50,100,100,150)
     # cell4.draw_move(cell5)
 
-    maze = Maze(5,5,5,5,50,50,win)
+    maze = Maze(5,5,3,3,50,50,win)
 
     for x in range(maze.num_rows):
             for y in range(maze.num_cols):
                 maze._draw_cell(x, y)
 
-    # maze._break_entrance_and_exit()
+    maze._break_entrance_and_exit()
     maze._break_walls_r(maze.num_rows, maze.num_cols)
+    maze._reset_cells_visted()
+    maze.solve()
     # maze._break_down_walls_between(maze._cells[1][1], maze._cells[2][1], "right")
 
     win.wait_for_close()

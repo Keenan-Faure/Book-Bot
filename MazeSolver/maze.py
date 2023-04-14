@@ -254,6 +254,8 @@ class Maze:
             first_cell = self._cells[0][0]
             last_cell = self._cells[row_len][col_len]
 
+            #left
+
             #breaks down walls then calls draw
             first_cell.has_left_wall = False
             first_cell.has_right_wall = False
@@ -262,12 +264,36 @@ class Maze:
 
             self._draw_cell(0,0)
 
+            #left of first cell right wall must be removed
+            first_cell = self._cells[1][0]
+            first_cell.has_left_wall = False
+
+            self._draw_cell(1,0)
+
+            #bottom of first cell top wall must be removed
+            first_cell = self._cells[0][1]
+            first_cell.has_top_wall = False
+
+            self._draw_cell(0,1)
+
             last_cell.has_left_wall = False
             last_cell.has_right_wall = False
             last_cell.has_top_wall = False
             last_cell.has_bottom_wall = False
 
             self._draw_cell(row_len,col_len)
+
+            #top of last cells bottom must be removed
+            last_cell = self._cells[row_len][col_len-1]
+            last_cell.has_bottom_wall = False
+
+            self._draw_cell(row_len,col_len-1)
+
+            #right of last cells right must be removed
+            last_cell = self._cells[row_len-1][col_len]
+            last_cell.has_right_wall = False
+
+            self._draw_cell(row_len-1,col_len)
     
     # returns the possible cells to visit
     # from the current cell
@@ -340,6 +366,7 @@ class Maze:
                         self._cells[i-1][j-1]._x2,
                         self._cells[i-1][j-1]._y2
                     )
+                    self._animate()
                     return
                 else:
                     #random direction
@@ -480,8 +507,9 @@ def main():
 
     maze._break_entrance_and_exit()
     maze._break_walls_r(maze.num_rows, maze.num_cols)
-    # maze._reset_cells_visted()
-    # maze.solve()
+    maze._reset_cells_visted()
+    maze._animate()
+    maze.solve()
     win.wait_for_close()
 
 main()

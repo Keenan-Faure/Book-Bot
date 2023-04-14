@@ -1,11 +1,3 @@
-#math algorithms
-#searching algorith (BFS) and DFS
-#unit tests
-#resursive functions
-#importing function
-#tkinter
-#OOP
-
 from tkinter import Tk, BOTH, Canvas
 from tkinter.messagebox import askokcancel, showinfo, WARNING
 from tkinter import Menu

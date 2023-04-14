@@ -25,10 +25,10 @@ MazeSolver
 
 This product takes the following into consideration:
 - math algorithms
-- searching algorith (BFS) and DFS
+- searching algorithms like BFS and DFS
 - unit tests
 - resursive functions
-- importing function
+- importing python modules
 - tkinter to display
 - Object Orientated Programming (OOP)
 

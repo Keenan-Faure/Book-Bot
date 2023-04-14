@@ -366,7 +366,6 @@ class Maze:
                         self._cells[i-1][j-1]._x2,
                         self._cells[i-1][j-1]._y2
                     )
-                    self._animate()
                     return
                 else:
                     #random direction

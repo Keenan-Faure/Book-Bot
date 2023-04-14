@@ -245,7 +245,7 @@ class Maze:
 
     def _animate(self):
         self.win.redraw()
-        time.sleep(0.5)
+        time.sleep(0.2)
 
     def _break_entrance_and_exit(self):
         if(len(self._cells) > 0):
@@ -276,7 +276,6 @@ class Maze:
     # i,j are the iteration through the maze
     def get_possible_visit(self, i:int, j:int, x:int, y:int):
         possible_visit = []
-        #top cell
         if(y-1 >= 0 and y-1 <= (j-1)): 
             if(self._cells[x][y-1].visited == False):
                 cell_dict = {
@@ -288,7 +287,6 @@ class Maze:
                 possible_visit.append(cell_dict)
                 # print("top | x: " + str(x) + " | y: " + str(y-1))
 
-        #left cell
         if(x-1 >= 0 and x-1 <= (i-1)): 
             if(self._cells[x-1][y].visited == False):
                 cell_dict = {
@@ -300,7 +298,6 @@ class Maze:
                 possible_visit.append(cell_dict)
                 # print("left | x: " + str(x-1) + " | y: " + str(y))
 
-        #right cell
         if(x+1 <= i-1 and x+1 >= 0): 
             if(self._cells[x+1][y].visited == False):
                 cell_dict = {
@@ -312,7 +309,6 @@ class Maze:
                 possible_visit.append(cell_dict)
                 # print("right | x: " + str(x+1) + " | y: " + str(y))
 
-        #bottom cell
         if(y+1 <= j-1 and y+1 >= 0): 
             if(self._cells[x][y+1].visited == False):
                 cell_dict = {
@@ -323,23 +319,20 @@ class Maze:
                 }
                 possible_visit.append(cell_dict)
                 # print("bottom | x: " + str(x) + " | y: " + str(y+1))
-
         return possible_visit
 
     def _break_walls_r(self, i: int, j: int):
         self._cells[i-1][j-1].visited = True
 
         #adding reversed to start from the numbers entered
+        possible_visit = []
         for x in reversed(range(i)):
             for y in reversed(range(j)):
-                possible_visit = []
+                possible_visit = self.get_possible_visit(self.num_cols, self.num_rows, x, y)
                 # print("Current x: " + str(x) + " | y: " + str(y))
-
-                possible_visit = self.get_possible_visit(i, j, x, y)
-
                 #no more places to go to
                 if(len(possible_visit) == 0):
-                    # print("Currently here with no exit |  x: " + str(i) + " | y: " + str(j))
+                    # print("Currently here with no exit | x: " + str(i) + " | y: " + str(j))
                     #draw current cell
                     self._cells[i-1][j-1].draw(
                         self._cells[i-1][j-1]._x1,
@@ -347,12 +340,10 @@ class Maze:
                         self._cells[i-1][j-1]._x2,
                         self._cells[i-1][j-1]._y2
                     )
-                    # self._draw_cell(x,y)
                     return
                 else:
                     #random direction
                     direction = int(random.randrange(len(possible_visit)))
-                    direction_real = possible_visit[direction]["post"]
                     self._break_down_walls_between(
                         self._cells[i-1][j-1],
                         possible_visit[direction]["cell"], 
@@ -360,10 +351,8 @@ class Maze:
                     )
                     self._break_walls_r(possible_visit[direction]["x"]+1,possible_visit[direction]["y"]+1)
 
-
     def _break_down_walls_between(self, this_cell: Cell, other_cell: Cell, direction: str):
         if(str(direction) == "top"):
-            #top wall of current & bottom of other
             this_cell.has_top_wall = False
             x_y = self._pos_to_pixel(this_cell._x1, this_cell._y1)
             self._draw_cell(x_y[0], x_y[1])
@@ -373,7 +362,6 @@ class Maze:
             self._draw_cell(x_y_2[0], x_y_2[1])
 
         elif(str(direction) == "left"):
-            #left wall of current & right wall of other
             this_cell.has_left_wall = False
             x_y = self._pos_to_pixel(this_cell._x1, this_cell._y1)
             self._draw_cell(x_y[0], x_y[1])
@@ -383,7 +371,6 @@ class Maze:
             self._draw_cell(x_y_2[0], x_y_2[1])
 
         elif(str(direction) == "right"):
-            #right wall of current & left of other
             this_cell.has_right_wall = False
             x_y = self._pos_to_pixel(this_cell._x1, this_cell._y1)
             self._draw_cell(x_y[0], x_y[1])
@@ -393,7 +380,6 @@ class Maze:
             self._draw_cell(x_y_2[0], x_y_2[1])
 
         elif(str(direction) == "bottom"):
-            #bottom wall of current & top of other
             this_cell.has_bottom_wall = False
             x_y = self._pos_to_pixel(this_cell._x1, this_cell._y1)
             self._draw_cell(x_y[0], x_y[1])
@@ -403,8 +389,8 @@ class Maze:
             self._draw_cell(x_y_2[0], x_y_2[1])
     
     def _reset_cells_visted(self):
-        for i in range(len(self._cells)):
-            for j in range(len(self._cells[0])):
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):
                 self._cells[i][j].visited = False
 
     # determines if a wall exists between two cells
@@ -465,6 +451,7 @@ class Maze:
                 # print("A wall exists between: (" + str(i) + "," + str(j) + ") and (" + str(possible_visits[index]["x"]) + "," + str(possible_visits[index]["y"]) + ")")
                 # print("Drew an UNDO cells move from: (" + str(i) + "," + str(j) + ") and (" + str(possible_visits[index]["x"]) + "," + str(possible_visits[index]["y"]) + ")")
                 self._cells[i][j].draw_move(possible_visits[index]["cell"], True)
+                self._animate()
 
             #no wall, not visited and a cell exists in the direction
             else:
@@ -485,7 +472,7 @@ class Maze:
 def main():
     win = Window(400, 400)
 
-    maze = Maze(5,5,3,3,50,50,win)
+    maze = Maze(5,5,5,5,50,50,win)
 
     for x in range(maze.num_rows):
             for y in range(maze.num_cols):
@@ -493,8 +480,8 @@ def main():
 
     maze._break_entrance_and_exit()
     maze._break_walls_r(maze.num_rows, maze.num_cols)
-    maze._reset_cells_visted()
-    maze.solve()
+    # maze._reset_cells_visted()
+    # maze.solve()
     win.wait_for_close()
 
 main()

@@ -48,6 +48,13 @@ Code execution process (what and when it executes) has been commented out.
 python3 maze.py
 ```
 
+GrocerSimulator
+-
+
+Project is still being developed ლ(╹◡╹ლ)
+
+
+
 (ﾉ*ФωФ)ﾉ **Thank you for reading** (ﾉ*ФωФ)ﾉ
 
 

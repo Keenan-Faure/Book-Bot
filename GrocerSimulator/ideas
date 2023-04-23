@@ -1,0 +1,8 @@
+Super markets:
+Products to be pulled from:
+
+- Internal, database  (insert before program starts), if its set it does not add it again (duplicates)
+- Sage One API (login required)???
+- Stock2Shop API (login required)
+- Woocommerce API
+

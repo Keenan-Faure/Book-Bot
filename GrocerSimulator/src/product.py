@@ -1,9 +1,9 @@
 class Product:
-    def __init__(self, code, title, qty, price):
+    def __init__(self, code: str="", title: str="", qty: int=0, price:float=0.00):
         self.__code = code
         self.__title = title
-        self.__qty = qty
-        self.__price = price
+        self.__qty = int(qty)
+        self.__price = float(price)
     
     #gettors and settors
     def get_code(self):

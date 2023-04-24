@@ -1,23 +1,26 @@
-import utils as Util
+from utils import *
 
 class Bank:
-    def __init__(self, name: str, branch_id: int, telephone_number: str):
-        self.__name             = name
-        self.__branch_id        = branch_id
-        self.__telephone_number = self.validate_phone_number(telephone_number)
+    def __init__(self,
+            name: str="",
+            branch_id: int=99999,
+            telephone_number: str=""
+        ):
+        self.__name             = str(name)
+        self.__branch_id        = int(branch_id)
+        self.__telephone_number = str(self.validate_phone_number(telephone_number))
     
     def validate_phone_number(self, phone_number: str):
         number_count = 0
         phone_number_list = phone_number.split()
         for item in phone_number_list:
             for char in item:
-                if(Util.toInt(char) == False):
-                    raise Exception("Invalid telephone number")
+                if(Utils.isInt(char) == False):
+                    self.set_telephone("")
                 else:
                     number_count += 1
         if(number_count != 10):
-            phone_number = ""
-            raise Exception("Invalid telephone number")
+            self.set_telephone("")
         return phone_number
     
     #gettors and settors

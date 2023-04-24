@@ -1,17 +1,17 @@
 class Address:
     def __init__(
             self,
-            address1: str,
-            address2: str,
-            postalcode: int,
-            city: str,
-            country: str
+            address1: str="",
+            address2: str="",
+            city: str="",
+            postalcode: int=9999,
+            country: str=""
         ):
-        self.__address1 = address1
-        self.__address2 = address2
-        self.__postalcode = postalcode
-        self.__city = city
-        self.__country = country
+        self.__address1   = str(address1)
+        self.__address2   = str(address2)
+        self.__city       = str(city)
+        self.__postalcode = int(postalcode)
+        self.__country    = str(country)
     
     #gettors and settors
     def get_address1(self):

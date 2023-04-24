@@ -3,8 +3,8 @@ import payment as Payment
 
 class Customer:
     def __init__(self, first_name:str, last_name:str, address:Address, payment_method:Payment):
-        self.__first_name = first_name
-        self.__last_name = last_name
+        self.__first_name = str(first_name)
+        self.__last_name = str(last_name)
         self.__address = address
         self.__payment_method = payment_method
     

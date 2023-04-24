@@ -1,18 +1,19 @@
-import payment as Payment
 
-class CashPayment(Payment):
-    def __init__(self, cash: float, cash_owner: str):
-        self.__cash = cash
-        self.__cash_owner = cash_owner
+class CashPayment():
+    def __init__(self, cash: float=0.0, cash_owner: str=""):
+        self.__cash = float(cash)
+        self.__cash_owner = str(cash_owner)
     
     def withdraw(self, amount: float):
         if(self.__cash < amount):
             raise Exception("Not enough Money on hand")
         else:
             self.__cash -= amount
+            self.__cash = round(self.__cash, 2)
     def deposit(self, amount: float):
         if(amount >= 0):
             self.__cash += amount
+            self.__cash = round(self.__cash, 2)
         else:
             raise Exception("Cannot deposit: " + str(amount))
         

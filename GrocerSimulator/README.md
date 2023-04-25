@@ -1,9 +1,4 @@
-need to install mysql
+install mysql connector for python
 ```
-python3.11 -m pip install --upgrade pip
-```
-
-install the mysql connector
-```
-mysql-connector-python
+pip3 install mysql-connector-python
 ```

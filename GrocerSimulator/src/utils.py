@@ -10,12 +10,16 @@ class Utils:
         CUR_DIR = Path(__file__).parent.absolute()
         config = open(CUR_DIR / '../config/config.json')
         config_data = json.load(config)
+        config.close()
         if(key != ''):
             keys = config_data.keys()
             if(key in keys):
+
                 return config_data[key]
             return ''
         return ''
+    
+    
 
     
     @staticmethod

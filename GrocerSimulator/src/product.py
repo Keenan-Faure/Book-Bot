@@ -1,9 +1,10 @@
 class Product:
-    def __init__(self, code: str="", title: str="", qty: int=0, price:float=0.00):
+    def __init__(self, code: str="", title: str="", qty: int=0, price:float=0.00, vendor: str=""):
         self.__code = code
         self.__title = title
         self.__qty = int(qty)
         self.__price = float(price)
+        self.__vendor = str(vendor)
     
     #gettors and settors
     def get_code(self):
@@ -14,6 +15,8 @@ class Product:
         return self.__qty
     def get_price(self):
         return self.__price
+    def get_vendor(self):
+        return self.__vendor
     
     def set_code(self, newCode):
         self.__code = newCode
@@ -23,3 +26,5 @@ class Product:
         self.__qty = newQty
     def set_price(self, newPrice):
         self.__price = newPrice
+    def set_vendor(self, newVendor):
+        self.__vendor = newVendor

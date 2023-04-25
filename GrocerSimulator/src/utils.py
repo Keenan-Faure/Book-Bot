@@ -18,10 +18,7 @@ class Utils:
                 return config_data[key]
             return ''
         return ''
-    
-    
 
-    
     @staticmethod
     def isInt(number):
         if(isinstance(number, (int, float))):

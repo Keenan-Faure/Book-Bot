@@ -10,4 +10,9 @@ in main.py
 - the internal database values should be inserted, if it cannot then display error
     - "Stock2Shop" products will be unavailable due to unstable mysql connection
 
+- Create connection to Stock2Shop API, SageOne, Woocommerce using Curl in python
+    - create respective unittests
+
+- create window class
+
 

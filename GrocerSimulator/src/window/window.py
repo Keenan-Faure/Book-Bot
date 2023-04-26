@@ -205,15 +205,18 @@ class Window(Tk):
                 vars2=IntVar()  
                 Checkbutton(window,text="Bank Payment", variable=vars2).place(x=290, y=360)  
 
-                btn = Button(window, text='Submit',width=20,bg='brown',fg='black')
+                btn = Button(window, text='Submit',width=20,bg='brown',fg='black', command=window.get_content(country_field))
                 btn.place(x=140,y=400)
-
                 window.wait_for_close()
+
             else:
                 raise Exception("Customer window already exists, please close and try again")
         except Exception as error:
             #TODO use logger 'warn' as well
             print(error)
+    def get_content(self, entry):
+        print("I am here")
+        print(entry.get())
 
     def close(self):
         answer = askokcancel(

@@ -1,22 +1,33 @@
+# Import the required libraries
 from tkinter import *
-from PIL import ImageTk, Image
+from tkinter import ttk
 
-#This creates the main window of an application
-window = Tk()
-window.title("Join")
-window.geometry("300x300")
-window.configure(background='grey')
+# Create an instance of tkinter frame or window
+win = Tk()
 
-path = "shp.jpeg"
+# Set the size of the window
+win.geometry("700x350")
 
-#Creates a Tkinter-compatible photo image, which can be used everywhere Tkinter expects an image object.
-img = ImageTk.PhotoImage(Image.open(path))
+# Define a function to get the output for selected option
+def selection():
+   print((radio.get()))
 
-#The Label widget is a standard Tkinter widget used to display a text or image on the screen.
-panel = Label(window, image = img)
+radio = IntVar()
+Label(text="Your Favourite programming language:", font=('Aerial 11')).pack()
 
-#The Pack geometry manager packs widgets in rows or columns.
-panel.pack(side = "bottom", fill = "both", expand = "yes")
+# Define radiobutton for each options
+r1 = Radiobutton(win, text="C++", variable=radio, value=1, command=selection)
 
-#Start the GUI
-window.mainloop()
+r1.pack(anchor=N)
+r2 = Radiobutton(win, text="Python", variable=radio, value=2, command=selection)
+
+r2.pack(anchor=N)
+r3 = Radiobutton(win, text="Java", variable=radio, value=3, command=selection)
+
+r3.pack(anchor=N)
+
+# Define a label widget
+label = Label(win)
+label.pack()
+
+win.mainloop()

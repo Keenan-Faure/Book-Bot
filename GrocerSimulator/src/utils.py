@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 CUR_DIR = Path(__file__).parent.absolute()
@@ -32,3 +33,15 @@ class Utils:
             return True
         else:
             return False
+    
+    @staticmethod
+    def export_data(data):
+        CUR_DIR = Path(__file__).parent.absolute()
+        save_path = CUR_DIR / '../config/customer.json'
+        if(Path(CUR_DIR / '../config/customer.json') == True):
+            ptf = open(save_path)
+            path = Path(ptf)
+            if(path.is_file() == True):
+                Path.unlink(ptf)
+        with open(save_path, 'w') as json_file:
+            json.dump(data, json_file)

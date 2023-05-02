@@ -1,28 +1,12 @@
 import mysql.connector
 import sys, os
 from pathlib import Path
-import datetime;
 
 CUR_DIR = Path(__file__).parent.absolute()
 sys.path.append(os.path.abspath(CUR_DIR / '../../src'))
 from utils import *
 
 class DbUtils:
-
-    """
-    Displays the `error`, `info`, `warning` type 
-    `messages` along with the 
-    message and `timestamp` on the console/terminal
-    """
-    @staticmethod
-    def logger(status: str='info', message:str=""):
-        if(status == "error"):
-            print("Error | " + message + " | " + str(datetime.datetime.now()))
-        elif(status == "warning"):
-            print("Warn | " + message + " | " + str(datetime.datetime.now()))
-        elif(status == "info"):
-            print("Info | " + message + " | " + str(datetime.datetime.now()))
-
     """
     Creates a mysql connection to the mysql-server
     """
@@ -45,7 +29,7 @@ class DbUtils:
                 )
             result = mydb
         except Exception as error:
-            DbUtils.logger("warning", error)
+            Utils.logger("warning", error)
         return result
 
     """
@@ -104,7 +88,7 @@ class DbUtils:
                 DbUtils.queryDb(mysql_conn, "CREATE DATABASE dbClover")
         
         else:
-            DbUtils.logger("warning", "Unable to load Internal Products")
+            Utils.logger("warning", "Unable to load Internal Products")
 
         if(db_exists == True):
             mysql_conn_db = DbUtils.init_conn(False)
@@ -133,8 +117,9 @@ class DbUtils:
                     "('GenImp-X-AP','Invitation to Mundane Life - Xiao','2150.0','0'),"
                     "('GenImp-H-PP','Moment of Bloom - Hu Tao','2600.5','5'),"
                     "('GenImp-K-AS','Leaves in the Wind - Kaedehara Kazuya','3400.9','10')")
-                DbUtils.logger('info', 'Successfully created internal products')
+                Utils.logger('info', 'Successfully created internal products')
             else:
-                DbUtils.logger('info', 'Internal products loaded successfully')
+                Utils.logger('info', 'Internal products loaded successfully')
 
-DbUtils.init_internal()
+    @staticmethod
+    def GET():

@@ -1,9 +1,16 @@
 class Product:
-    def __init__(self, code: str="", title: str="", qty: int=0, price:float=0.00, vendor: str=""):
-        self.__code = code
-        self.__title = title
-        self.__qty = int(qty)
-        self.__price = float(price)
+    def __init__(self, code: str="", title: str="", qty: int=0, price:float=0.0, vendor: str=""):
+        self.__code  = str(code)
+        self.__title = str(title)
+
+        if(qty == "" or qty == None): 
+            self.__qty   = 0
+        else: self.__qty = int(qty)
+
+        if(price == "" or price == None):
+            self.__price   = 0.0
+        else: self.__price = float(price)
+
         self.__vendor = str(vendor)
     
     #gettors and settors

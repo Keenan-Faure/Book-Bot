@@ -335,5 +335,6 @@ class Window(Tk):
 def main():
     win = Window(460, 515, "main", "Grocer Simulator")
     win.wait_for_close()
+    print(Utils.import_data())
 
 main()

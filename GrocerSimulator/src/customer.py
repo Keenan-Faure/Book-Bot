@@ -1,5 +1,4 @@
 import address as Address
-import payment as Payment
 
 class Customer:
     def __init__(self, first_name:str, last_name:str, address:Address, payment_method:Payment):

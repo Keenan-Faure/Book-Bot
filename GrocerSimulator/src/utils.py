@@ -1,11 +1,30 @@
 import json
-import os
 from pathlib import Path
+import datetime;
 
 CUR_DIR = Path(__file__).parent.absolute()
 
 class Utils:
 
+    """
+    Displays the `error`, `info`, `warning` type 
+    `messages` along with the 
+    message and `timestamp` on the console/terminal
+    """
+    @staticmethod
+    def logger(status: str='info', message:str=""):
+        if(status == "error"):
+            print("Error | " + message + " | " + str(datetime.datetime.now()))
+        elif(status == "warning"):
+            print("Warn | " + message + " | " + str(datetime.datetime.now()))
+        elif(status == "info"):
+            print("Info | " + message + " | " + str(datetime.datetime.now()))
+
+    """
+    reads in the contents of the config.json file 
+    using a certain key
+    returns en empty string if key is not found
+    """
     @staticmethod
     def readConfig(key: str):
         CUR_DIR = Path(__file__).parent.absolute()
@@ -15,11 +34,14 @@ class Utils:
         if(key != ''):
             keys = config_data.keys()
             if(key in keys):
-
                 return config_data[key]
             return ''
         return ''
 
+    """
+    Checks if a variable is an integer
+    returns true if it's an integer, false otherwise
+    """
     @staticmethod
     def isInt(number):
         if(isinstance(number, (int, float))):
@@ -34,6 +56,9 @@ class Utils:
         else:
             return False
     
+    """
+    writes out the `data` to a customer.json file
+    """
     @staticmethod
     def export_data(data):
         CUR_DIR = Path(__file__).parent.absolute()
@@ -45,3 +70,37 @@ class Utils:
                 Path.unlink(ptf)
         with open(save_path, 'w') as json_file:
             json.dump(data, json_file)
+    
+    """
+    imports the contents of the customer.json file
+    returns an empty dict if its not found
+    """
+    @staticmethod
+    def import_data():
+        try:
+            CUR_DIR = Path(__file__).parent.absolute()
+            file_path = open(CUR_DIR / '../config/customer.json')
+            data = json.load(file_path)
+            file_path.close()
+            return data
+        except Exception as error:
+            Utils.logger('warn', error)
+            return {}
+    
+    """
+    returns the contents of the api.json file
+    returns an Empty dict if its not found
+    """
+    @staticmethod
+    def get_api_config(key: str=""):
+        try:
+            if(key == ""):
+                raise Exception("Undefined key: None")
+            CUR_DIR = Path(__file__).parent.absolute()
+            config = open(CUR_DIR / '../config/api.json')
+            config_data = json.load(config)
+            config.close()
+            return config_data[key]
+        except Exception as error:
+            Utils.logger('warn', error)
+            return {}

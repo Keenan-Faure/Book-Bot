@@ -5,6 +5,7 @@ from pathlib import Path
 CUR_DIR = Path(__file__).parent.absolute()
 sys.path.append(os.path.abspath(CUR_DIR / '../../src'))
 from utils import *
+from product import *
 
 class DbUtils:
     """
@@ -41,7 +42,7 @@ class DbUtils:
         if(mysql_connection != None):
             cursor = mysql_connection.cursor()
             cursor.execute(query)
-            if("insert into" in query):
+            if("insert into" in query.lower()):
                 mysql_connection.commit()
             result["query_data"] = []
             for data in cursor:
@@ -68,6 +69,22 @@ class DbUtils:
                 "Price varchar(255),"
                 "Quantity varchar(255))"
             )
+    
+    @staticmethod
+    def checkDatabase(mysql_connection: mysql.connector):
+        db_exists = False
+        if(mysql_connection != None):
+            databases = DbUtils.queryDb(mysql_connection, "show databases")
+            for i in range(len(databases["query_data"])):
+                if('dbgrocery' == (databases["query_data"][i][0]).lower()):
+                    db_exists = True
+                    break
+            if(db_exists == False):
+                DbUtils.queryDb(mysql_connection, "CREATE DATABASE dbGrocery")
+                db_exists = True
+        else:
+            Utils.logger("warning", "Unable to load Internal Products")
+        return db_exists
 
     """
     Inserts products into database
@@ -77,19 +94,7 @@ class DbUtils:
     @staticmethod
     def init_internal():
         mysql_conn = DbUtils.init_conn()
-        db_exists = False
-        if(mysql_conn != None):
-            databases = DbUtils.queryDb(mysql_conn, "show databases")
-            for i in range(len(databases["query_data"])):
-                if('dbclover' == (databases["query_data"][i][0]).lower()):
-                    db_exists = True
-                    break
-            if(db_exists == False):
-                DbUtils.queryDb(mysql_conn, "CREATE DATABASE dbClover")
-        
-        else:
-            Utils.logger("warning", "Unable to load Internal Products")
-
+        db_exists = DbUtils.checkDatabase(mysql_conn)
         if(db_exists == True):
             mysql_conn_db = DbUtils.init_conn(False)
             DbUtils.checkInventory(mysql_conn_db)
@@ -97,29 +102,40 @@ class DbUtils:
 
             product_count = DbUtils.queryDb(mysql_conn_db, "SELECT COUNT(*) FROM inventory")
             count = product_count["query_data"][0][0]
-            if(count != 15):
-                DbUtils.queryDb(mysql_conn_db,"DELETE FROM INVENTORY")
+            if(count != 9):
+                DbUtils.queryDb(mysql_conn_db,"DELETE FROM inventory")
                 DbUtils.queryDb(
                     mysql_conn_db,
                     "INSERT INTO inventory(Code, Title, Price, Quantity)"
-                    "values('GenImp-V-AA','Amos Bow','1170','0'),"
+                    "values('GenImp-V-AA','Ballad in Goblets - Venti','1170','0'),"
                     "('GenImp-Amos','Amos Bow','1170','2'),"
                     "('GenImp-SkywardAtlas','Skyward Atlas','1150','5'),"
                     "('GenImp-A-GC','Onis Royale - Arataki Itto','779.9','10'),"
                     "('GenImp-S-CP','The Transcendent One Returns - Shenhe','1759.9','2'),"
                     "('GenImp-RedHornStone','Redhorn Stonethresher','1050.0','4'),"
                     "('GenImp-MemoryDust','Memory of Dust','1350','0'),"
-                    "('GenImp-KaguraVerity','Kaguras Verity	','2550.0','9'),"
-                    "('GenImp-S-HC','Drifting Luminescence - Sangonomiya Kokomi','2350.5','2'),"
-                    "('GenImp-R-EP','Reign of Serenity - Raiden Shogun','3559.0','0'),"
-                    "('GenImp-ThunderingPulse','Thundering Pulse','1170.5','1'),"
-                    "('GenImp-K-CS','The Herons Court - Kamisato Ayaka','1750.0','12'),"
-                    "('GenImp-X-AP','Invitation to Mundane Life - Xiao','2150.0','0'),"
-                    "('GenImp-H-PP','Moment of Bloom - Hu Tao','2600.5','5'),"
+                    "('GenImp-KaguraVerity','Kaguras Verity','2550.0','9'),"
                     "('GenImp-K-AS','Leaves in the Wind - Kaedehara Kazuya','3400.9','10')")
                 Utils.logger('info', 'Successfully created internal products')
             else:
                 Utils.logger('info', 'Internal products loaded successfully')
+        else:
+            Utils.logger('error', 'Uncaught error | Please follow prerequisites')
 
     @staticmethod
     def GET():
+        product_data = []
+        try:
+            DbUtils.init_internal()
+            conn = DbUtils.init_conn(False)
+            results = DbUtils.queryDb(conn, "SELECT * FROM inventory LIMIT 15")
+            for product in results["query_data"]:
+                system_product = Product(str(product[0]),
+                                            str(product[1]),
+                                            (product[3]),
+                                            (product[2]),
+                                            "MySQL Shoppers")
+                product_data.append(system_product)
+        except Exception as error:
+            Utils.logger('error', error)
+        return product_data

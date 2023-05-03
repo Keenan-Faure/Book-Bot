@@ -10,6 +10,9 @@ class GroceryOrder:
     def print_receipt(self):
         print("printing order on a receipt")
     
+    def orderConfirm(self, warehouse):
+        print("does calculations on the order")
+    
     #gettors and settors
     def get_customer(self):
         return self.__customer

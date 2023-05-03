@@ -11,6 +11,9 @@ CUR_DIR = Path(__file__).parent.absolute()
 sys.path.append(os.path.abspath(CUR_DIR / '../../src'))
 
 from utils import *
+from database.dbUtils import *
+from api.sageone import *
+from api.wooCom import *
 
 class Window(Tk):
 
@@ -65,7 +68,7 @@ class Window(Tk):
         menubar.add_cascade(label="Featured", menu=featured)
 
         about = Menu(menubar, tearoff=0)
-        about.add_command(label="Github", command=self.open_web)
+        about.add_command(label="Prerequisite", command=self.open_setup)
         menubar.add_cascade(label="About", menu=about, underline=0)
 
         menubar.add_separator()
@@ -97,6 +100,57 @@ class Window(Tk):
         panel = Label(master=self, image=img)
         panel.image = img
         panel.pack(side="bottom")
+
+    def open_setup(self):
+        try:
+            if("ABOUT" in TopLevel.WINDOWS):
+                TopLevel.WINDOWS.remove("ABOUT")
+                window_setup = TopLevel("about")
+                window_setup.geometry("600x250")
+                window_setup.running = False
+                window_setup.resizable = (False, False)
+                window_setup.title("View prerequisites")
+                
+                text = Label(window_setup, text="Prerequisites", width=20, font=("bold", 20))
+                text.place(x=160, y=0)
+
+                setup_1 = Label(window_setup, text="Install Pip3 and Python", width=20, font=("bold", 10))
+                setup_1.place(x=70, y=40)
+
+                setup_15_entry = Entry(window_setup, width=25)
+                setup_15_entry.insert(0, "sudo apt install python3")
+                setup_15_entry.place(x=240, y=40)
+
+                setup_1_entry = Entry(window_setup, width=25)
+                setup_1_entry.insert(0, "sudo apt-get install python3-pip")
+                setup_1_entry.place(x=240, y=80)
+
+                setup_2 = Label(window_setup, text="Install Pillow", width=20, font=("bold", 10))
+                setup_2.place(x=70, y=120)
+
+                setup_2_entry = Entry(window_setup, width=25)
+                setup_2_entry.insert(0, "sudo pip3 install Pillow")
+                setup_2_entry.place(x=240, y=120)
+
+                setup_3 = Label(window_setup, text="Install Requests", width=20, font=("bold", 10))
+                setup_3.place(x=70, y=160)
+
+                setup_3_entry = Entry(window_setup, width=25)
+                setup_3_entry.insert(0, "sudo pip3 install requests")
+                setup_3_entry.place(x=240, y=160)
+
+                setup_4 = Label(window_setup, text="Instal MySQL Connector", width=20, font=("bold", 10))
+                setup_4.place(x=70, y=160)
+
+                setup_4_entry= Entry(window_setup, width=25)
+                setup_4_entry.insert(0, "sudo pip3 install mysql-connector-python")
+                setup_4_entry.place(x=240, y=160)
+
+                window_setup.mainloop()
+            else:
+                raise Exception("About window already exists, please close and try again")
+        except Exception as error:
+            Utils.logger('warn', error)
 
     def load_config(self):
         try:
@@ -130,12 +184,179 @@ class Window(Tk):
             else:
                 raise Exception("Config window already exists, please close and try again")
         except Exception as error:
-            #TODO use logger 'warn' as well
-            print(error)
+            Utils.logger('warn', error)
     
     def start_game(self):
-        showinfo("Init Game", "Game will load shortly") 
+        try:
+            if("MAIN" in TopLevel.WINDOWS):                    
+                TopLevel.WINDOWS.remove("MAIN")
+                window = TopLevel("main")
+                window.geometry("1200x800")
+                window.running = False
+                window.resizable = (False, False)
+                window.title("Grocer Simulator | Browse Products")
 
+                def create_order_view():
+                    print("I am creating order")
+                
+                def submit_line_item():
+                    # print("I am submitting here")
+                    # print(code.cget("text"))
+                    # print(price.cget("text"))
+                    # print(amount.get())
+                    print("")
+
+
+                landing_label = Label(
+                    window,
+                    text = "Available Products",
+                    padx=10,
+                    pady=10,
+                    width=140,
+                    background="green"
+                )
+                
+                landing_label.place(x=10, y=10)
+                    
+                CODE_X_POS = 20
+                TITLE_X_POS = 200
+                PRICE_X_POS = 580
+                QTY_X_POS = 710
+                VENDOR_X_POS = 790
+                AMOUNT_BUY_X_POS = 970
+                SUBMIT_LINE_ITEM_X_POS = 1045
+
+                code_header = Label(window, text="Code", padx=10, pady=10, width=15, font=("bold", 15), background="grey")
+                code_header.place(x=CODE_X_POS, y=70)
+
+                title_header = Label(window, text="Title", padx=10, pady=10, width=35, font=("bold", 15), background="grey")
+                title_header.place(x=TITLE_X_POS, y=70)
+
+                price_header = Label(window, text="Price", padx=10, pady=10, width=10, font=("bold", 15), background="grey")
+                price_header.place(x=PRICE_X_POS, y=70)
+
+                qty_header = Label(window, text="Quantity", padx=10, pady=10, width=5, font=("bold", 15), background="grey")
+                qty_header.place(x=QTY_X_POS, y=70)
+
+                vendor_header = Label(window, text="Brand", padx=10, pady=10, width=15, font=("bold", 15), background="grey")
+                vendor_header.place(x=VENDOR_X_POS, y=70)
+
+                buyable_header = Label(window, text="Amount", padx=10, pady=10, width=5, font=("bold", 14), background="grey")
+                buyable_header.place(x=AMOUNT_BUY_X_POS, y=70)
+
+                line_item_submit = Label(window, text="Confirm", padx=10, pady=10, width=7, font=("bold", 15), background="grey")
+                line_item_submit.place(x=SUBMIT_LINE_ITEM_X_POS, y=70)
+
+                wooProducts = WooCommerce.GET()
+                sageProducts = SageOne.GET()
+                internalProducts = DbUtils.GET()
+
+                products = wooProducts + sageProducts + internalProducts
+
+                color = "grey"
+                for i in range(len(products)):
+                    if(products[i].get_vendor() == "MySQL Shoppers"):
+                        color = "magenta"
+                    elif(products[i].get_vendor() == "MySQL Shoppers"):
+                        color = "white"
+                    elif(products[i].get_vendor() == "MySQL Shoppers"):
+                        color = "yellow"
+
+                    Label(
+                        window,
+                        text=products[i].get_code(),
+                        padx=10,
+                        pady=2,
+                        width=15,
+                        font=("bold", 15),
+                        background="grey"
+                        ).place(x=CODE_X_POS, y=130 + (30 * i))
+
+                    Label(
+                        window,
+                        text=products[i].get_title(),
+                        padx=10, pady=2,
+                        width=35,
+                        font=("bold", 15),
+                        background="grey"
+                        ).place(x=TITLE_X_POS, y=130 + (30 * i))
+
+                    Label(
+                        window,
+                        text=products[i].get_price(),
+                        padx=10,
+                        pady=2,
+                        width=10,
+                        font=("bold", 15),
+                        background="grey"
+                        ).place(x=PRICE_X_POS, y=130 + (30 * i))
+                    if(products[i].get_qty() <= 0):
+                        Label(
+                            window,
+                            text=products[i].get_qty(),
+                            padx=10,
+                            pady=2,
+                            width=5,
+                            font=("bold", 15),
+                            background="red"
+                            ).place(x=QTY_X_POS, y=130 + (30 * i))
+                    else:
+                        Label(
+                            window,
+                            text=products[i].get_qty(),
+                            padx=10,
+                            pady=2,
+                            width=5,
+                            font=("bold", 15),
+                            background="grey"
+                            ).place(x=QTY_X_POS, y=130 + (30 * i))
+
+                    Label(
+                        window,
+                        text=products[i].get_vendor(),
+                        padx=10,
+                        pady=2,
+                        width=15,
+                        font=("bold", 15),
+                        background=color,
+                    ).place(x=VENDOR_X_POS, y=130 + (30 * i))
+
+                    Entry(
+                        window,
+                        width=5,
+                    ).place(x=AMOUNT_BUY_X_POS, y=130 + (30 * i))
+
+                    btn_submit_line = Button(
+                        window,
+                        text='add item!',
+                        width=5,
+                        pady=2,
+                        padx=2,
+                        bg='brown',
+                        fg='black',
+                        command=submit_line_item
+                    )
+                    btn_submit_line.place(x=SUBMIT_LINE_ITEM_X_POS,y=130+ (i*30))
+
+                if(i == len(products)-1):
+                    btn = Button(
+                        window,
+                        text='Place Order!',
+                        width=25,
+                        pady=5,
+                        padx=5,
+                        bg='brown',
+                        fg='black',
+                        command=create_order_view
+                    )
+                    btn.place(x=520,y=((i*30)+200))
+                window.mainloop()
+            else:
+                showinfo("Error", "Main window already exists, please close and try again")
+                raise Exception("Main window already exists, please close and try again")
+        except Exception as error:
+            Utils.logger('warn', error)
+    
     def reset_game(self):
         showinfo("init Game", "Game will reset shortly")
     
@@ -151,7 +372,7 @@ class Window(Tk):
                 
                 text = Label(window_main, text="Registration form", width=20, font=("bold", 20))
                 text.place(x=80, y=10)
-
+   
                 first_name = Label(window_main, text="First Name", width=20, font=("bold", 10))
                 first_name.place(x=70, y=80)
 
@@ -304,8 +525,7 @@ class Window(Tk):
                                 window.wait_for_close()
 
                     except Exception as error:
-                        #TODO logger instead
-                        print(error)
+                        Utils.logger('warn', error)
 
                 btn = Button(window_main, text='Submit',width=20,bg='brown',fg='black', command=get_content)
                 btn.place(x=140,y=400)
@@ -315,8 +535,7 @@ class Window(Tk):
                 raise Exception("Customer window already exists, please close and try again")
             
         except Exception as error:
-            #TODO use logger 'warn' as well
-            print(error)
+            Utils.logger('warn', error)
 
     def close(self):
         answer = askokcancel(

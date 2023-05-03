@@ -14,11 +14,11 @@ class Utils:
     @staticmethod
     def logger(status: str='info', message:str=""):
         if(status == "error"):
-            print("Error | " + message + " | " + str(datetime.datetime.now()))
+            print("Error | " + str(message) + " | " + str(datetime.datetime.now()))
         elif(status == "warning"):
-            print("Warn | " + message + " | " + str(datetime.datetime.now()))
+            print("Warn | " + str(message) + " | " + str(datetime.datetime.now()))
         elif(status == "info"):
-            print("Info | " + message + " | " + str(datetime.datetime.now()))
+            print("Info | " + str(message) + " | " + str(datetime.datetime.now()))
 
     """
     reads in the contents of the config.json file 

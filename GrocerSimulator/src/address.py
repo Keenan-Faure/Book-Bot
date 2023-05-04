@@ -10,7 +10,8 @@ class Address:
         self.__address1   = str(address1)
         self.__address2   = str(address2)
         self.__city       = str(city)
-        self.__postalcode = int(postalcode)
+        if(postalcode == "" or postalcode == None): self.__postalcode = 9999
+        else: self.__postalcode = int(postalcode)
         self.__country    = str(country)
     
     #gettors and settors

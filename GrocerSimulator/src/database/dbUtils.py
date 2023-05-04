@@ -102,19 +102,15 @@ class DbUtils:
 
             product_count = DbUtils.queryDb(mysql_conn_db, "SELECT COUNT(*) FROM inventory")
             count = product_count["query_data"][0][0]
-            if(count != 9):
+            if(count != 5):
                 DbUtils.queryDb(mysql_conn_db,"DELETE FROM inventory")
                 DbUtils.queryDb(
                     mysql_conn_db,
                     "INSERT INTO inventory(Code, Title, Price, Quantity)"
                     "values('GenImp-V-AA','Ballad in Goblets - Venti','1170','0'),"
-                    "('GenImp-Amos','Amos Bow','1170','2'),"
-                    "('GenImp-SkywardAtlas','Skyward Atlas','1150','5'),"
                     "('GenImp-A-GC','Onis Royale - Arataki Itto','779.9','10'),"
                     "('GenImp-S-CP','The Transcendent One Returns - Shenhe','1759.9','2'),"
                     "('GenImp-RedHornStone','Redhorn Stonethresher','1050.0','4'),"
-                    "('GenImp-MemoryDust','Memory of Dust','1350','0'),"
-                    "('GenImp-KaguraVerity','Kaguras Verity','2550.0','9'),"
                     "('GenImp-K-AS','Leaves in the Wind - Kaedehara Kazuya','3400.9','10')")
                 Utils.logger('info', 'Successfully created internal products')
             else:

@@ -1,7 +1,7 @@
 import address as Address
 
 class Customer:
-    def __init__(self, first_name:str, last_name:str, address:Address, payment_method:Payment):
+    def __init__(self, first_name:str, last_name:str, address:Address, payment_method):
         self.__first_name = str(first_name)
         self.__last_name = str(last_name)
         self.__address = address
@@ -23,5 +23,5 @@ class Customer:
         self.__last_name = newLastName
     def set_address(self, newAddress:Address):
         self.__address = newAddress
-    def set_payment(self, newPaymentMethod:Payment):
+    def set_payment(self, newPaymentMethod):
         self.__payment_method = newPaymentMethod

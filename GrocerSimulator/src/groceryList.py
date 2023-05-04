@@ -13,5 +13,6 @@ class GroceryList:
     #gettors and settors
     def get_grocery_list(self):
         return self.__product_list
-
     
+    def set_grocery_list(self, newList: list):
+        self.__product_list = newList 

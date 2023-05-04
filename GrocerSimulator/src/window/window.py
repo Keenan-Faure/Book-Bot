@@ -14,6 +14,14 @@ from utils import *
 from database.dbUtils import *
 from api.sageone import *
 from api.wooCom import *
+from groceryOrder import *
+from customer import *
+from address import *
+from bankPayment import *
+from cashPayment import *
+from bank import *
+from groceryList import *
+from product import *
 
 class Window(Tk):
 
@@ -29,6 +37,8 @@ class Window(Tk):
             "payment_response": None
         }
     }
+    
+    Products = []
 
     def __init__(self, width: int, height: int, type:str, title:str):
         super().__init__()
@@ -191,28 +201,75 @@ class Window(Tk):
             if("MAIN" in TopLevel.WINDOWS):                    
                 TopLevel.WINDOWS.remove("MAIN")
                 window = TopLevel("main")
-                window.geometry("1200x800")
+                window.geometry("1050x700")
                 window.running = False
                 window.resizable = (False, False)
                 window.title("Grocer Simulator | Browse Products")
 
+                OrderLineItems = []
+
+                Window.Customer = Utils.import_data()
+
                 def create_order_view():
-                    print("I am creating order")
-                
-                def submit_line_item():
-                    # print("I am submitting here")
-                    # print(code.cget("text"))
-                    # print(price.cget("text"))
-                    # print(amount.get())
-                    print("")
+                    line_items = GroceryList([])
+                    for line_item in OrderLineItems:
+                        product = Product(
+                            line_item[0].cget("text"),
+                            line_item[1].cget("text"),
+                            line_item[2].get(),
+                            line_item[3].cget("text"),
+                            line_item[4].cget("text")
+                        )
+                        line_items.add_product(product)
+                    try:
+                        PaymentMethod = None
 
+                        address = Address(
+                            Window.Customer["address1"],
+                            Window.Customer["address2"],
+                            Window.Customer["city"],
+                            Window.Customer["postal_code"],
+                            Window.Customer["country"]
+                        )
 
+                        if(Window.Customer["payment"]["payment_response"] == 1):
+                            PaymentMethod = CashPayment(
+                                Window.Customer["payment"]["amount"],
+                                Window.Customer["payment"]["cash_owner"]
+                            )
+                        elif(Window.Customer["payment"]["payment_response"] == 2):
+                            bank = Bank(
+                                Window.Customer["payment"]["bank_name"],
+                                Window.Customer["payment"]["branch_id"],
+                                Window.Customer["payment"]["telephone_number"]
+                            )
+                            PaymentMethod = BankPayment(
+                                Window.Customer["payment"]["amount"],
+                                bank
+                            )
+                        else:
+                            raise Exception("Customer details not setup")
+                        customer = Customer(
+                            Window.Customer["first_name"],
+                            Window.Customer["last_name"],
+                            address,
+                            PaymentMethod
+                        )
+                        order = GroceryOrder(customer, line_items)
+                        print(order.orderConfirm(Window.Products)[0])
+                        #confirm order, print out receipt
+                        #decrease quantities of products
+                        #if program resets, it resets quantities
+                    except KeyError as error:
+                        showinfo("Order Error", "Key '" + str(error) + "' not found. Please setup your customer")
+                    except Exception as error:
+                        showinfo("Order Error", str(error))
                 landing_label = Label(
                     window,
                     text = "Available Products",
                     padx=10,
                     pady=10,
-                    width=140,
+                    width=115,
                     background="green"
                 )
                 
@@ -224,7 +281,6 @@ class Window(Tk):
                 QTY_X_POS = 710
                 VENDOR_X_POS = 790
                 AMOUNT_BUY_X_POS = 970
-                SUBMIT_LINE_ITEM_X_POS = 1045
 
                 code_header = Label(window, text="Code", padx=10, pady=10, width=15, font=("bold", 15), background="grey")
                 code_header.place(x=CODE_X_POS, y=70)
@@ -244,101 +300,96 @@ class Window(Tk):
                 buyable_header = Label(window, text="Amount", padx=10, pady=10, width=5, font=("bold", 14), background="grey")
                 buyable_header.place(x=AMOUNT_BUY_X_POS, y=70)
 
-                line_item_submit = Label(window, text="Confirm", padx=10, pady=10, width=7, font=("bold", 15), background="grey")
-                line_item_submit.place(x=SUBMIT_LINE_ITEM_X_POS, y=70)
-
                 wooProducts = WooCommerce.GET()
                 sageProducts = SageOne.GET()
                 internalProducts = DbUtils.GET()
 
-                products = wooProducts + sageProducts + internalProducts
+                Window.Products = wooProducts + sageProducts + internalProducts
 
                 color = "grey"
-                for i in range(len(products)):
-                    if(products[i].get_vendor() == "MySQL Shoppers"):
+                for i in range(len(Window.Products)):
+                    if(Window.Products[i].get_vendor() == "MySQL Shoppers"):
                         color = "magenta"
-                    elif(products[i].get_vendor() == "MySQL Shoppers"):
+                    elif(Window.Products[i].get_vendor() == "Sage One Super Market"):
                         color = "white"
-                    elif(products[i].get_vendor() == "MySQL Shoppers"):
+                    elif(Window.Products[i].get_vendor() == "WooCommerce Super Market"):
                         color = "yellow"
 
-                    Label(
+                    code = Label(
                         window,
-                        text=products[i].get_code(),
+                        text=Window.Products[i].get_code(),
                         padx=10,
                         pady=2,
                         width=15,
                         font=("bold", 15),
                         background="grey"
-                        ).place(x=CODE_X_POS, y=130 + (30 * i))
+                    )
+                    code.place(x=CODE_X_POS, y=130 + (30 * i))
 
-                    Label(
+                    title = Label(
                         window,
-                        text=products[i].get_title(),
+                        text=Window.Products[i].get_title(),
                         padx=10, pady=2,
                         width=35,
                         font=("bold", 15),
                         background="grey"
-                        ).place(x=TITLE_X_POS, y=130 + (30 * i))
+                    )
+                    title.place(x=TITLE_X_POS, y=130 + (30 * i))
 
-                    Label(
+                    price = Label(
                         window,
-                        text=products[i].get_price(),
+                        text=Window.Products[i].get_price(),
                         padx=10,
                         pady=2,
                         width=10,
                         font=("bold", 15),
                         background="grey"
-                        ).place(x=PRICE_X_POS, y=130 + (30 * i))
-                    if(products[i].get_qty() <= 0):
-                        Label(
+                    )
+                    price.place(x=PRICE_X_POS, y=130 + (30 * i))
+                    if(Window.Products[i].get_qty() <= 0):
+                        qty = Label(
                             window,
-                            text=products[i].get_qty(),
+                            text=Window.Products[i].get_qty(),
                             padx=10,
                             pady=2,
                             width=5,
                             font=("bold", 15),
                             background="red"
-                            ).place(x=QTY_X_POS, y=130 + (30 * i))
+                            )
+                        qty.place(x=QTY_X_POS, y=130 + (30 * i))
                     else:
-                        Label(
+                        qty = Label(
                             window,
-                            text=products[i].get_qty(),
+                            text=Window.Products[i].get_qty(),
                             padx=10,
                             pady=2,
                             width=5,
                             font=("bold", 15),
                             background="grey"
-                            ).place(x=QTY_X_POS, y=130 + (30 * i))
+                            )
+                        qty.place(x=QTY_X_POS, y=130 + (30 * i))
 
-                    Label(
+                    vendor = Label(
                         window,
-                        text=products[i].get_vendor(),
+                        text=Window.Products[i].get_vendor(),
                         padx=10,
                         pady=2,
                         width=15,
                         font=("bold", 15),
                         background=color,
-                    ).place(x=VENDOR_X_POS, y=130 + (30 * i))
-
-                    Entry(
-                        window,
-                        width=5,
-                    ).place(x=AMOUNT_BUY_X_POS, y=130 + (30 * i))
-
-                    btn_submit_line = Button(
-                        window,
-                        text='add item!',
-                        width=5,
-                        pady=2,
-                        padx=2,
-                        bg='brown',
-                        fg='black',
-                        command=submit_line_item
                     )
-                    btn_submit_line.place(x=SUBMIT_LINE_ITEM_X_POS,y=130+ (i*30))
+                    vendor.place(x=VENDOR_X_POS, y=130 + (30 * i))
 
-                if(i == len(products)-1):
+                    submit = Entry(
+                        window,
+                        width=7,
+                    )
+
+                    submit.place(x=AMOUNT_BUY_X_POS, y=130 + (30 * i))
+                    line_item = [code, title, submit, price, vendor]
+                    OrderLineItems.append(line_item)
+
+                if(i == len(Window.Products)-1):
                     btn = Button(
                         window,
                         text='Place Order!',
@@ -349,7 +400,7 @@ class Window(Tk):
                         fg='black',
                         command=create_order_view
                     )
-                    btn.place(x=520,y=((i*30)+200))
+                    btn.place(x=420,y=((i*30)+200))
                 window.mainloop()
             else:
                 showinfo("Error", "Main window already exists, please close and try again")

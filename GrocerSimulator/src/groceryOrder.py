@@ -1,18 +1,81 @@
 import customer as Customer
 import groceryList as GroceryList
 
+from product import *
+
 class GroceryOrder:
 
-    def __init__(self, customer, groceryList):
+    def __init__(self, customer: Customer, groceryList: GroceryList):
         self.__customer = customer
         self.__groceryList = groceryList
 
+        self.orderedProducts = []
+        self.totalCost = 0
+
+    """
+    Displays the order receipt on the 
+    command console
+    """
     def print_receipt(self):
         print("printing order on a receipt")
+
+    """
+    Confirms the order and prints out a receipt
+    returns the products whose quantities should be 
+    updated in `Window.Products` and the `totalCost`
+    """
+    def orderConfirm(self, onHandProducts: GroceryList):
+        self.remove_zero_qty()
+        if(len(onHandProducts) <= 0):
+            raise Exception("No Products loaded in Store")
+        if(len(self.__groceryList.get_grocery_list()) <= 0):
+            raise Exception("No Products in Basket")
+
+        for product in self.__groceryList.get_grocery_list():
+            if(self.in_stock(product, onHandProducts)):
+                print("I am in stock: " + str(product.get_code()))
+                self.deduct_cost(product, self.__customer)
+        return [self.orderedProducts, self.totalCost]
     
-    def orderConfirm(self, warehouse):
-        print("does calculations on the order")
-    
+    """
+    Confirms if there is enough
+    Qty to order the item
+    raises an Exception (returns None)
+    if there is not enough on hand
+    or if the code is not found
+    """
+    def in_stock(self, product: Product, onHandProducts:GroceryList):
+        for product_on_hand in onHandProducts:
+            if(product_on_hand.get_code() == product.get_code()):
+                if(product_on_hand.get_qty() >= product.get_qty()):
+                    self.orderedProducts.append(product)
+                    return True
+                raise Exception("Not enough quantity for Code '" + product.get_code() + "'")
+        raise Exception("No Code found equal to '" + product.get_code() + "'")
+        
+    """
+    Adds the product price to the
+    total cost otherwise it 
+    raises an Exception if the cost 
+    exceeds the current balance
+    """
+    def deduct_cost(self, product: Product, customer: Customer):
+        prod_price = int(product.get_price() * product.get_qty())
+        if(prod_price <= int(customer.get_payment_method().get_amount() + self.totalCost)):
+            self.totalCost += prod_price
+        elif(prod_price > customer.get_payment_method().get_amount()):
+            raise Exception("Not enough money to buy x" + str(product.get_qty()) + " of '" +  product.get_code()+ "'")
+
+    """
+    Removes zero quantity products from grocery list
+    """
+    def remove_zero_qty(self):
+        new_list = []
+        for product in self.__groceryList.get_grocery_list():
+            if(product.get_qty() > 0):
+               new_list.append(product)
+        self.__groceryList.set_grocery_list(new_list)
+
     #gettors and settors
     def get_customer(self):
         return self.__customer

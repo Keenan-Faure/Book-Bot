@@ -1,18 +1,5 @@
-Super markets:
-Products to be pulled from:
-
-- Internal, database  (insert before program starts), if its set it does not add it again (duplicates)
-- Sage One API (login required)???
-- Stock2Shop API (login required)
-- Woocommerce API
-
-in main.py
-- the internal database values should be inserted, if it cannot then display error
-    - "Stock2Shop" products will be unavailable due to unstable mysql connection
-
-- Create connection to Stock2Shop API, SageOne, Woocommerce using Curl in python
-    - create respective unittests
-
-- create window class
-
-
+- tests
+- print receipt
+- final checks
+- configure README.md
+- upload api.json format to github

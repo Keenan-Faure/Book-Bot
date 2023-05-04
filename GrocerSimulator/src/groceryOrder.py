@@ -13,13 +13,6 @@ class GroceryOrder:
         self.totalCost = 0
 
     """
-    Displays the order receipt on the 
-    command console
-    """
-    def print_receipt(self):
-        print("printing order on a receipt")
-
-    """
     Confirms the order and prints out a receipt
     returns the products whose quantities should be 
     updated in `Window.Products` and the `totalCost`
@@ -33,7 +26,6 @@ class GroceryOrder:
 
         for product in self.__groceryList.get_grocery_list():
             if(self.in_stock(product, onHandProducts)):
-                print("I am in stock: " + str(product.get_code()))
                 self.deduct_cost(product, self.__customer)
         return [self.orderedProducts, self.totalCost]
     

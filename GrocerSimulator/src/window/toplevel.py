@@ -19,7 +19,8 @@ class TopLevel(Toplevel):
         "INIT",
         "ORDER",
         "CUSTOMER",
-        "PAYMENT"
+        "PAYMENT",
+        "RECEIPT"
     ]
 
     # private root Tk

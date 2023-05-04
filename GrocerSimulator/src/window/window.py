@@ -67,6 +67,12 @@ class Window(Tk):
         while(self.running == True):
             self.redraw()
     
+    def close_main(self):
+        if(self.type not in TopLevel.WINDOWS):
+            TopLevel.WINDOWS.append(self.type)
+            self.running = False
+            self.destroy()
+    
     def create_menu(self):
         #Optional menu
         menubar = Menu(self)
@@ -256,9 +262,18 @@ class Window(Tk):
                             PaymentMethod
                         )
                         order = GroceryOrder(customer, line_items)
-                        print(order.orderConfirm(Window.Products)[0])
-                        #confirm order, print out receipt
-                        #decrease quantities of products
+                        order_results = order.orderConfirm(Window.Products)
+                        if(len(order_results[0]) > 0):
+                            for product in order_results[0]:
+                                for product_window in Window.Products:
+                                    if(product.get_code() == product_window.get_code()):
+                                        deduct_qty = product_window.get_qty() - product.get_qty()
+                                        product_window.set_qty(int(deduct_qty))
+                        Window.Customer["payment"]["amount"] = float(Window.Customer["payment"]["amount"]) - float(order_results[1])
+                        Utils.export_data(Window.Customer)
+                        #closes window
+                        window.window_close()
+                        #prints out receipt
                         #if program resets, it resets quantities
                     except KeyError as error:
                         showinfo("Order Error", "Key '" + str(error) + "' not found. Please setup your customer")
@@ -266,7 +281,7 @@ class Window(Tk):
                         showinfo("Order Error", str(error))
                 landing_label = Label(
                     window,
-                    text = "Available Products",
+                    text = "Available Products | " + str(Window.Customer["payment"]["amount"]),
                     padx=10,
                     pady=10,
                     width=115,
@@ -409,7 +424,25 @@ class Window(Tk):
             Utils.logger('warn', error)
     
     def reset_game(self):
-        showinfo("init Game", "Game will reset shortly")
+        showinfo("Grocer Simulator", "Game has successfully been reset")
+    
+    def print_receipt(self):
+        try:
+            if("RECEIPT" in TopLevel.WINDOWS):
+                TopLevel.WINDOWS.remove("RECEIPT")
+                window = TopLevel("receipt")
+                window.geometry("300x250")
+                window.running = False
+                window.resizable = (False, False)
+                window.title("Order Receipt")
+                
+                #create order view here
+
+                window.mainloop()
+            else:
+                raise Exception("Config window already exists, please close and try again")
+        except Exception as error:
+            Utils.logger('warn', error)
     
     def set_customer_details(selt):
         try:
@@ -516,7 +549,7 @@ class Window(Tk):
 
                                 def get_cash_payment():
                                     Window.Customer["payment"]["cash_owner"] = cash_owner_field.get()
-                                    Window.Customer["payment"]["amount"] = cash_amount_field.get()
+                                    Window.Customer["payment"]["amount"] = float(cash_amount_field.get())
                                     Utils.export_data(Window.Customer)
                                     window_main.window_close()
                                     window.window_close()
@@ -563,9 +596,9 @@ class Window(Tk):
 
                                 def get_bank_payment():
                                     Window.Customer["payment"]["bank_name"] = bank_name_field.get()
-                                    Window.Customer["payment"]["branch_id"] = branch_id_field.get()
+                                    Window.Customer["payment"]["branch_id"] = int(branch_id_field.get())
                                     Window.Customer["payment"]["telephone_number"] = telephone_number_field.get()
-                                    Window.Customer["payment"]["amount"] = amount_field.get()
+                                    Window.Customer["payment"]["amount"] = int(amount_field.get())
                                     Utils.export_data(Window.Customer)
                                     window.window_close()
                                     window_main.window_close()
@@ -602,9 +635,9 @@ class Window(Tk):
         webbrowser.open('https://github.com/Keenan-Faure/Boot-Dev', new=0)  
 
 #Main function
-def main():
-    win = Window(460, 515, "main", "Grocer Simulator")
-    win.wait_for_close()
-    print(Utils.import_data())
+# def main():
+#     win = Window(460, 515, "main", "Grocer Simulator")
+#     win.wait_for_close()
+#     print(Utils.import_data())
 
-main()
+# main()

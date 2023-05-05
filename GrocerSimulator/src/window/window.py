@@ -596,9 +596,9 @@ class Window(Tk):
 
                                 def get_bank_payment():
                                     Window.Customer["payment"]["bank_name"] = bank_name_field.get()
-                                    Window.Customer["payment"]["branch_id"] = int(branch_id_field.get())
+                                    Window.Customer["payment"]["branch_id"] = branch_id_field.get()
                                     Window.Customer["payment"]["telephone_number"] = telephone_number_field.get()
-                                    Window.Customer["payment"]["amount"] = int(amount_field.get())
+                                    Window.Customer["payment"]["amount"] = amount_field.get()
                                     Utils.export_data(Window.Customer)
                                     window.window_close()
                                     window_main.window_close()
@@ -634,10 +634,10 @@ class Window(Tk):
     def open_web(self):
         webbrowser.open('https://github.com/Keenan-Faure/Boot-Dev', new=0)  
 
-#Main function
-# def main():
-#     win = Window(460, 515, "main", "Grocer Simulator")
-#     win.wait_for_close()
-#     print(Utils.import_data())
+# Main function
+def main():
+    win = Window(460, 515, "main", "Grocer Simulator")
+    win.wait_for_close()
+    print(Utils.import_data())
 
-# main()
+main()

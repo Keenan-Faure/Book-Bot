@@ -10,24 +10,24 @@ class GroceryOrder:
         self.__groceryList = groceryList
 
         self.orderedProducts = []
-        self.totalCost = 0
+        self.totalCost = 0.0
 
     """
     Confirms the order and prints out a receipt
     returns the products whose quantities should be 
     updated in `Window.Products` and the `totalCost`
     """
-    def orderConfirm(self, onHandProducts: GroceryList):
+    def orderConfirm(self, storeProducts: GroceryList):
         self.remove_zero_qty()
-        if(len(onHandProducts) <= 0):
+        if(len(storeProducts) <= 0):
             raise Exception("No Products loaded in Store")
         if(len(self.__groceryList.get_grocery_list()) <= 0):
             raise Exception("No Products in Basket")
 
         for product in self.__groceryList.get_grocery_list():
-            if(self.in_stock(product, onHandProducts)):
+            if(self.in_stock(product, storeProducts)):
                 self.deduct_cost(product, self.__customer)
-        return [self.orderedProducts, self.totalCost]
+        return [self.orderedProducts, float(self.totalCost)]
     
     """
     Confirms if there is enough
@@ -36,8 +36,8 @@ class GroceryOrder:
     if there is not enough on hand
     or if the code is not found
     """
-    def in_stock(self, product: Product, onHandProducts:GroceryList):
-        for product_on_hand in onHandProducts:
+    def in_stock(self, product: Product, storeProducts:GroceryList):
+        for product_on_hand in storeProducts:
             if(product_on_hand.get_code() == product.get_code()):
                 if(product_on_hand.get_qty() >= product.get_qty()):
                     self.orderedProducts.append(product)
@@ -52,8 +52,8 @@ class GroceryOrder:
     exceeds the current balance
     """
     def deduct_cost(self, product: Product, customer: Customer):
-        prod_price = int(product.get_price() * product.get_qty())
-        if(prod_price <= int(customer.get_payment_method().get_amount() + self.totalCost)):
+        prod_price = float(product.get_price() * product.get_qty())
+        if(prod_price <= float(customer.get_payment_method().get_amount() + self.totalCost)):
             self.totalCost += prod_price
         elif(prod_price > customer.get_payment_method().get_amount()):
             raise Exception("Not enough money to buy x" + str(product.get_qty()) + " of '" +  product.get_code()+ "'")

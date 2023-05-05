@@ -83,9 +83,12 @@ class Utils:
             data = json.load(file_path)
             file_path.close()
             return data
+        except FileNotFoundError as fnf_error:
+            Utils.logger('error', "File not found | " + fnf_error)
+            return {}
         except Exception as error:
             Utils.logger('warn', error)
-            return {}
+            return {} 
     
     """
     returns the contents of the api.json file

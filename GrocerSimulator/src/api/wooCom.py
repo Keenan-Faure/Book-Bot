@@ -37,11 +37,13 @@ class WooCommerce:
                             raise Exception(f"Product with SKU: {str(sku)} not found on WooCommerce")
                         system_product = Product(str(woo_product["products"][0]["title"]),
                                                  str(woo_product["products"][0]["sku"]),
-                                                 (woo_product["products"][0]["price"]),
                                                  (woo_product["products"][0]["stock_quantity"]),
+                                                 (woo_product["products"][0]["price"]),
                                                  "WooCommerce Super Market")
                         product_data.append(system_product)
             return product_data
+        except KeyError as key_error:
+            print('Key Error: ' + str(key_error) + " does not exist")
         except HTTPError as http_err:
             print('HTTP Error: ' + str(http_err))
             return product_data

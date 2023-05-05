@@ -36,11 +36,13 @@ class SageOne:
                             raise Exception(f"Product with ID: {str(id)} not found in Sage One")
                         system_product = Product(str(sage_product["Code"]),
                                                  str(sage_product["Description"]),
-                                                 int(sage_product["QuantityOnHand"]),
-                                                 float(sage_product["PriceInclusive"]),
+                                                 (sage_product["QuantityOnHand"]),
+                                                 (sage_product["PriceInclusive"]),
                                                  "Sage One Super Market")
                         product_data.append(system_product)
             return product_data
+        except KeyError as key_error:
+            print('Key Error: ' + str(key_error) + " does not exist")
         except HTTPError as http_err:
             print('HTTP Error: ' + str(http_err))
             return product_data

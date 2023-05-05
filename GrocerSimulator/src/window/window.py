@@ -216,6 +216,27 @@ class Window(Tk):
 
                 Window.Customer = Utils.import_data()
 
+                def print_receipt():
+                    try:
+                        if("RECEIPT" in TopLevel.WINDOWS):
+                            TopLevel.WINDOWS.remove("RECEIPT")
+                            window = TopLevel("receipt")
+                            window.geometry("500x350")
+                            window.running = False
+                            window.resizable = (False, False)
+                            window.title("Order Receipt")
+                            
+                            #create order view here
+
+                            receipt_header = Label(self, text = "Please visit the About", padx=10, pady=0, fg='red', bg='black', width=10)
+                            receipt_header.place(x=50, y=50)
+
+                            window.mainloop()
+                        else:
+                            raise Exception("Config window already exists, please close and try again")
+                    except Exception as error:
+                        Utils.logger('warn', error)
+
                 def create_order_view():
                     line_items = GroceryList([])
                     for line_item in OrderLineItems:
@@ -274,7 +295,9 @@ class Window(Tk):
                         #closes window
                         window.window_close()
                         #prints out receipt
+
                         #if program resets, it resets quantities
+                        print_receipt()
                     except KeyError as error:
                         showinfo("Order Error", "Key '" + str(error) + "' not found. Please setup your customer")
                     except Exception as error:
@@ -425,24 +448,6 @@ class Window(Tk):
     
     def reset_game(self):
         showinfo("Grocer Simulator", "Game has successfully been reset")
-    
-    def print_receipt(self):
-        try:
-            if("RECEIPT" in TopLevel.WINDOWS):
-                TopLevel.WINDOWS.remove("RECEIPT")
-                window = TopLevel("receipt")
-                window.geometry("300x250")
-                window.running = False
-                window.resizable = (False, False)
-                window.title("Order Receipt")
-                
-                #create order view here
-
-                window.mainloop()
-            else:
-                raise Exception("Config window already exists, please close and try again")
-        except Exception as error:
-            Utils.logger('warn', error)
     
     def set_customer_details(selt):
         try:
@@ -638,6 +643,4 @@ class Window(Tk):
 def main():
     win = Window(460, 515, "main", "Grocer Simulator")
     win.wait_for_close()
-    print(Utils.import_data())
-
 main()

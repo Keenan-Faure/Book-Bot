@@ -32,15 +32,16 @@ class WooCommerce:
                         response = requests.get(url, params=params, headers=headers)
                         response.raise_for_status()
                         woo_product = response.json()
-
-                        if(woo_product == None):
-                            raise Exception(f"Product with SKU: {str(sku)} not found on WooCommerce")
-                        system_product = Product(str(woo_product["products"][0]["title"]),
-                                                 str(woo_product["products"][0]["sku"]),
-                                                 (woo_product["products"][0]["stock_quantity"]),
-                                                 (woo_product["products"][0]["price"]),
-                                                 "WooCommerce Super Market")
-                        product_data.append(system_product)
+                        if(woo_product == None or woo_product["products"] == []):
+                            Utils.logger("warn", f"Product with SKU: {str(sku)} not found on WooCommerce")
+                            continue
+                        else:
+                            system_product = Product(str(woo_product["products"][0]["title"]),
+                                                    str(woo_product["products"][0]["sku"]),
+                                                    (woo_product["products"][0]["stock_quantity"]),
+                                                    (woo_product["products"][0]["price"]),
+                                                    "WooCommerce Super Market")
+                            product_data.append(system_product)
             return product_data
         except KeyError as key_error:
             print('Key Error: ' + str(key_error) + " does not exist")

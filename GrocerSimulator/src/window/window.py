@@ -221,15 +221,67 @@ class Window(Tk):
                         if("RECEIPT" in TopLevel.WINDOWS):
                             TopLevel.WINDOWS.remove("RECEIPT")
                             window = TopLevel("receipt")
-                            window.geometry("500x350")
+                            window.geometry("500x450")
                             window.running = False
                             window.resizable = (False, False)
                             window.title("Order Receipt")
                             
                             #create order view here
 
-                            receipt_header = Label(self, text = "Please visit the About", padx=10, pady=0, fg='red', bg='black', width=10)
-                            receipt_header.place(x=50, y=50)
+                            receipt_header = Label(
+                                window, 
+                                text="Thank you for shopping with Universal Store",
+                                padx=20,
+                                pady=20,
+                                font=("bold", 15),
+                                fg='red',
+                                bg='black',
+                                width=46
+                            )
+                            receipt_header.place(x=0, y=0)
+
+                            receipt_shop_number = Label(
+                                window, 
+                                text="Universal Store Tel no: 087 888 9878",
+                                padx=15,
+                                pady=10,
+                                fg='grey',
+                                bg='black',
+                                width=23
+                            )
+                            receipt_shop_number.place(x=0,y=50)
+
+                            receipt_shop_place = Label(
+                                window, 
+                                text="14 Montrose Plain",
+                                padx=15,
+                                pady=10,
+                                fg='grey',
+                                bg='black',
+                                width=23
+                            )
+                            receipt_shop_place.place(x=0,y=90)
+                            receipt_shop_place_2 = Label(
+                                window, 
+                                text="Cape Town",
+                                padx=15,
+                                pady=10,
+                                fg='grey',
+                                bg='black',
+                                width=26
+                            )
+                            receipt_shop_place_2.place(x=230,y=90)
+
+
+                            PROD_TITLE_X_POS = 50
+                            PROD_CODE_X_POS = 50
+                            PROD_PRICE_X_POS = 50
+                            PROD_QTY_X_POS = 50
+
+                            TOTAL_X_POS = 50
+                            AMNT_PAID_X_POS = 50
+                            
+                            MSG_X_POS = 50
 
                             window.mainloop()
                         else:
@@ -339,10 +391,14 @@ class Window(Tk):
                 buyable_header.place(x=AMOUNT_BUY_X_POS, y=70)
 
                 wooProducts = WooCommerce.GET()
+                print(wooProducts)
                 sageProducts = SageOne.GET()
+                print(sageProducts)
                 internalProducts = DbUtils.GET()
 
                 Window.Products = wooProducts + sageProducts + internalProducts
+                print(internalProducts)
+
 
                 color = "grey"
                 for i in range(len(Window.Products)):

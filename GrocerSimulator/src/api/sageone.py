@@ -43,6 +43,7 @@ class SageOne:
             return product_data
         except KeyError as key_error:
             print('Key Error: ' + str(key_error) + " does not exist")
+            return product_data
         except HTTPError as http_err:
             print('HTTP Error: ' + str(http_err))
             return product_data

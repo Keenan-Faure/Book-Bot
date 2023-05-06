@@ -1,1 +1,6 @@
-{"grocer_products": [{"code": "GenImp-V-AA", "title": "Ballad in Goblets - Venti", "qty": 0, "price": 1170.0, "vendor": "MySQL Shoppers"}, {"code": "GenImp-A-GC", "title": "Onis Royale - Arataki Itto", "qty": 0, "price": 779.9, "vendor": "MySQL Shoppers"}, {"code": "GenImp-S-CP", "title": "The Transcendent One Returns - Shenhe", "qty": 0, "price": 1759.9, "vendor": "MySQL Shoppers"}, {"code": "GenImp-RedHornStone", "title": "Redhorn Stonethresher", "qty": 0, "price": 1050.0, "vendor": "MySQL Shoppers"}, {"code": "GenImp-K-AS", "title": "Leaves in the Wind - Kaedehara Kazuya", "qty": 0, "price": 3400.9, "vendor": "MySQL Shoppers"}]}
+{
+    "grocer_products": 
+    [
+        
+    ]
+}

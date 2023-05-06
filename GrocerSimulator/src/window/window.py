@@ -6,6 +6,7 @@ from pathlib import Path
 from toplevel import *
 import sys, os
 import webbrowser
+import json
 
 CUR_DIR = Path(__file__).parent.absolute()
 sys.path.append(os.path.abspath(CUR_DIR / '../../src'))
@@ -22,6 +23,23 @@ from cashPayment import *
 from bank import *
 from groceryList import *
 from product import *
+
+PROD_TITLE_X_POS = 0
+PROD_CODE_X_POS = 165
+PROD_PRICE_X_POS = 295
+PROD_QTY_X_POS = 390
+TOTAL_X_POS = 350
+AMNT_PAID_X_POS = 350
+INCREMENTOR = 40
+
+CODE_X_POS = 20
+TITLE_X_POS = 200
+PRICE_X_POS = 580
+QTY_X_POS = 710
+VENDOR_X_POS = 790
+AMOUNT_BUY_X_POS = 970
+
+WEBPAGE = 'https://github.com/Keenan-Faure/Boot-Dev'
 
 class Window(Tk):
 
@@ -62,8 +80,6 @@ class Window(Tk):
 
     def wait_for_close(self):
         self.running = True
-
-        #continuously updates the windows
         while(self.running == True):
             self.redraw()
     
@@ -74,10 +90,8 @@ class Window(Tk):
             self.destroy()
     
     def create_menu(self):
-        #Optional menu
         menubar = Menu(self)
         self.config(menu=menubar)
-
         featured = Menu(menubar, tearoff=0)
         featured.add_command(label="Customer", command=self.set_customer_details)
         featured.add_command(label="Config", command=self.load_config)
@@ -201,7 +215,9 @@ class Window(Tk):
                 raise Exception("Config window already exists, please close and try again")
         except Exception as error:
             Utils.logger('warn', error)
-    
+    """
+    Starts the game
+    """
     def start_game(self):
         try:
             if("MAIN" in TopLevel.WINDOWS):                    
@@ -216,72 +232,179 @@ class Window(Tk):
 
                 Window.Customer = Utils.import_data()
 
-                def print_receipt():
+                def print_receipt(change: float, groceryList: list, totalCost: float):
                     try:
                         if("RECEIPT" in TopLevel.WINDOWS):
                             TopLevel.WINDOWS.remove("RECEIPT")
                             window = TopLevel("receipt")
-                            window.geometry("500x450")
+                            window.geometry("486x500")
                             window.running = False
                             window.resizable = (False, False)
                             window.title("Order Receipt")
                             
-                            #create order view here
-
-                            receipt_header = Label(
+                            Label(
                                 window, 
-                                text="Thank you for shopping with Universal Store",
+                                text="Thank you for shopping with Universal Store ＼(٥⁀▽⁀ )／",
                                 padx=20,
                                 pady=20,
                                 font=("bold", 15),
                                 fg='red',
                                 bg='black',
                                 width=46
-                            )
-                            receipt_header.place(x=0, y=0)
+                            ).place(x=0, y=0)
 
-                            receipt_shop_number = Label(
+                            Label(
                                 window, 
                                 text="Universal Store Tel no: 087 888 9878",
                                 padx=15,
                                 pady=10,
                                 fg='grey',
-                                bg='black',
                                 width=23
-                            )
-                            receipt_shop_number.place(x=0,y=50)
+                            ).place(x=0,y=65)
 
-                            receipt_shop_place = Label(
+                            Label(
                                 window, 
-                                text="14 Montrose Plain",
-                                padx=15,
+                                text="14 Montrose Plain Cape Town",
+                                padx=0,
                                 pady=10,
                                 fg='grey',
-                                bg='black',
                                 width=23
-                            )
-                            receipt_shop_place.place(x=0,y=90)
-                            receipt_shop_place_2 = Label(
+                            ).place(x=0,y=105)
+
+                            Label(
                                 window, 
-                                text="Cape Town",
+                                text="South Africa 7790",
                                 padx=15,
                                 pady=10,
                                 fg='grey',
-                                bg='black',
                                 width=26
-                            )
-                            receipt_shop_place_2.place(x=230,y=90)
-
-
-                            PROD_TITLE_X_POS = 50
-                            PROD_CODE_X_POS = 50
-                            PROD_PRICE_X_POS = 50
-                            PROD_QTY_X_POS = 50
-
-                            TOTAL_X_POS = 50
-                            AMNT_PAID_X_POS = 50
+                            ).place(x=230,y=105)
                             
-                            MSG_X_POS = 50
+                            Label(
+                                window,
+                                text="Title",
+                                padx=10,
+                                pady=10,
+                                width=20,
+                                font=("bold", 10),
+                                background="grey"
+                            ).place(x=PROD_TITLE_X_POS, y=150)
+
+                            Label(
+                                window,
+                                text="Code",
+                                padx=10,
+                                pady=10,
+                                width=15,
+                                font=("bold", 10),
+                                background="grey"
+                            ).place(x=PROD_CODE_X_POS, y=150)
+
+                            Label(
+                                window,
+                                text="Price",
+                                padx=10,
+                                pady=10,
+                                width=10,
+                                font=("bold", 10),
+                                background="grey"
+                            ).place(x=PROD_PRICE_X_POS, y=150)
+
+                            Label(
+                                window,
+                                text="Qty",
+                                padx=10,
+                                pady=10,
+                                width=10,
+                                font=("bold", 10),
+                                background="grey"
+                            ).place(x=PROD_QTY_X_POS, y=150)
+
+                            for i in range(len(groceryList)):
+                                Label(
+                                    window,
+                                    text=groceryList[i].get_title(),
+                                    padx=10,
+                                    pady=10,
+                                    width=20,
+                                    font=("bold", 10),
+                                    background="grey"
+                                ).place(x=PROD_TITLE_X_POS, y=(150+((i+1)*INCREMENTOR)))
+
+                                Label(
+                                    window,
+                                    text=groceryList[i].get_code(),
+                                    padx=10,
+                                    pady=10,
+                                    width=15,
+                                    font=("bold", 10),
+                                    background="grey"
+                                ).place(x=PROD_CODE_X_POS, y=(150+((i+1)*INCREMENTOR)))
+
+                                Label(
+                                    window,
+                                    text=groceryList[i].get_price(),
+                                    padx=10,
+                                    pady=10,
+                                    width=10,
+                                    font=("bold", 10),
+                                    background="grey"
+                                ).place(x=PROD_PRICE_X_POS, y=(150+((i+1)*INCREMENTOR)))
+
+                                Label(
+                                    window,
+                                    text=groceryList[i].get_qty(),
+                                    padx=10,
+                                    pady=10,
+                                    width=10,
+                                    font=("bold", 10),
+                                    background="grey"
+                                ).place(x=PROD_QTY_X_POS, y=(150+((i+1)*INCREMENTOR)))
+
+                            Label(
+                                window,
+                                text="Total: " + str(round(totalCost, 2)),
+                                padx=10,
+                                pady=10,
+                                width=15,
+                                font=("bold", 10)
+                            ).place(x=TOTAL_X_POS, y=(200+((i+1)*INCREMENTOR)))
+
+                            Label(
+                                window,
+                                text="Paid: " + str(round(totalCost, 2)),
+                                padx=10,
+                                pady=10,
+                                width=15,
+                                font=("bold", 10)
+                            ).place(x=AMNT_PAID_X_POS, y=(250+((i+1)*INCREMENTOR)))
+
+                            Label(
+                                window,
+                                text="Remaining: " + str(round(change, 2)),
+                                padx=10,
+                                pady=10,
+                                width=20,
+                                font=("bold", 10)
+                            ).place(x=AMNT_PAID_X_POS, y=(300+((i+1)*INCREMENTOR)))
+
+                            Label(
+                                window,
+                                text="Please Keep your Slip as Proof of Payment",
+                                padx=10,
+                                pady=10,
+                                width=46,
+                                font=("bold", 15)
+                            ).place(x=0, y=(350+((i+1)*INCREMENTOR)))
+
+                            Label(
+                                window,
+                                text="You were helped by AI-0209",
+                                padx=10,
+                                pady=10,
+                                width=46,
+                                font=("bold", 15)
+                            ).place(x=0, y=(400+((i+1)*INCREMENTOR)))
 
                             window.mainloop()
                         else:
@@ -302,7 +425,6 @@ class Window(Tk):
                         line_items.add_product(product)
                     try:
                         PaymentMethod = None
-
                         address = Address(
                             Window.Customer["address1"],
                             Window.Customer["address2"],
@@ -337,19 +459,26 @@ class Window(Tk):
                         order = GroceryOrder(customer, line_items)
                         order_results = order.orderConfirm(Window.Products)
                         if(len(order_results[0]) > 0):
-                            for product in order_results[0]:
-                                for product_window in Window.Products:
-                                    if(product.get_code() == product_window.get_code()):
-                                        deduct_qty = product_window.get_qty() - product.get_qty()
-                                        product_window.set_qty(int(deduct_qty))
-                        Window.Customer["payment"]["amount"] = float(Window.Customer["payment"]["amount"]) - float(order_results[1])
-                        Utils.export_data(Window.Customer)
-                        #closes window
-                        window.window_close()
-                        #prints out receipt
+                            for j in range(len(order_results[0])):
+                                for i in range(len(Window.Products)):
+                                    if(order_results[0][j].get_code() == Window.Products[i].get_code()):
+                                        deduct_qty = Window.Products[i].get_qty() - order_results[0][j].get_qty()
+                                        Window.Products[i].set_qty(int(deduct_qty))
 
-                        #if program resets, it resets quantities
-                        print_receipt()
+                        Window.Customer["payment"]["amount"] = float(
+                            Window.Customer["payment"]["amount"]) - float(order_results[1])
+                        
+                        Utils.export_data(Window.Customer)
+                        data = {}
+                        data["grocer_products"] = []
+                        for product in Window.Products:
+                            data["grocer_products"].append(vars(product))
+                        print(len(Window.Products))
+                        Utils.export_product_data(data)
+                        window.window_close()
+
+                        print_receipt(Window.Customer["payment"]["amount"], order_results[0], order_results[1])
+
                     except KeyError as error:
                         showinfo("Order Error", "Key '" + str(error) + "' not found. Please setup your customer")
                     except Exception as error:
@@ -364,41 +493,92 @@ class Window(Tk):
                 )
                 
                 landing_label.place(x=10, y=10)
-                    
-                CODE_X_POS = 20
-                TITLE_X_POS = 200
-                PRICE_X_POS = 580
-                QTY_X_POS = 710
-                VENDOR_X_POS = 790
-                AMOUNT_BUY_X_POS = 970
 
-                code_header = Label(window, text="Code", padx=10, pady=10, width=15, font=("bold", 15), background="grey")
+                code_header = Label(
+                    window,
+                    text="Code",
+                    padx=10,
+                    pady=10,
+                    width=15,
+                    font=("bold", 15),
+                    background="grey"
+                )
                 code_header.place(x=CODE_X_POS, y=70)
 
-                title_header = Label(window, text="Title", padx=10, pady=10, width=35, font=("bold", 15), background="grey")
+                title_header = Label(
+                    window,
+                    text="Title",
+                    padx=10,
+                    pady=10,
+                    width=35,
+                    font=("bold", 15),
+                    background="grey"
+                )
                 title_header.place(x=TITLE_X_POS, y=70)
 
-                price_header = Label(window, text="Price", padx=10, pady=10, width=10, font=("bold", 15), background="grey")
+                price_header = Label(
+                    window,
+                    text="Price",
+                    padx=10,
+                    pady=10,
+                    width=10,
+                    font=("bold", 15),
+                    background="grey"
+                )
                 price_header.place(x=PRICE_X_POS, y=70)
 
-                qty_header = Label(window, text="Quantity", padx=10, pady=10, width=5, font=("bold", 15), background="grey")
+                qty_header = Label(
+                    window,
+                    text="Quantity",
+                    padx=10,
+                    pady=10,
+                    width=5,
+                    font=("bold", 15),
+                    background="grey"
+                )
                 qty_header.place(x=QTY_X_POS, y=70)
 
-                vendor_header = Label(window, text="Brand", padx=10, pady=10, width=15, font=("bold", 15), background="grey")
+                vendor_header = Label(
+                    window,
+                    text="Brand",
+                    padx=10,
+                    pady=10,
+                    width=15,
+                    font=("bold", 15),
+                    background="grey"
+                )
                 vendor_header.place(x=VENDOR_X_POS, y=70)
 
-                buyable_header = Label(window, text="Amount", padx=10, pady=10, width=5, font=("bold", 14), background="grey")
+                buyable_header = Label(
+                    window,
+                    text="Amount",
+                    padx=10,
+                    pady=10,
+                    width=5,
+                    font=("bold", 14),
+                    background="grey"
+                )
                 buyable_header.place(x=AMOUNT_BUY_X_POS, y=70)
 
-                wooProducts = WooCommerce.GET()
-                print(wooProducts)
-                sageProducts = SageOne.GET()
-                print(sageProducts)
-                internalProducts = DbUtils.GET()
+                import_data = Utils.import_product_data()["grocer_products"]
+                print(import_data)
 
-                Window.Products = wooProducts + sageProducts + internalProducts
-                print(internalProducts)
-
+                if(import_data == []):
+                    wooProducts = WooCommerce.GET()
+                    sageProducts = SageOne.GET()
+                    internalProducts = DbUtils.GET()
+                    Window.Products = wooProducts + sageProducts + internalProducts
+                else:
+                    Window.Products = []
+                    for product_obj in import_data:
+                        product = Product(
+                            product_obj["code"],
+                            product_obj["title"],
+                            product_obj["qty"],
+                            product_obj["price"],
+                            product_obj["vendor"]
+                        )
+                        Window.Products.append(product)
 
                 color = "grey"
                 for i in range(len(Window.Products)):
@@ -563,14 +743,25 @@ class Window(Tk):
                 def get_payment():
                     Window.Customer["payment"]["payment_response"] = int(radio.get())
 
-                #payment
                 payment=Label(window_main, text="Payment", width=20,font=('bold',10))
                 payment.place(x=70,y=360)
                 radio=IntVar()
 
-                Radiobutton(window_main,text="Cash Payment", variable=radio, value=1, command=get_payment).place(x=230,y=360)  
+                Radiobutton(
+                    window_main,
+                    text="Cash Payment",
+                    variable=radio,
+                    value=1,
+                    command=get_payment
+                ).place(x=230,y=360)  
                 
-                Radiobutton(window_main,text="Bank Payment", variable=radio, value=2, command=get_payment).place(x=290, y=360)
+                Radiobutton(
+                    window_main,
+                    text="Bank Payment",
+                    variable=radio,
+                    value=2,
+                    command=get_payment
+                ).place(x=290, y=360)
 
                 def get_content():
                     Window.Customer["first_name"] = first_name_field.get()
@@ -585,7 +776,6 @@ class Window(Tk):
                         if(Window.Customer["payment"]["payment_response"] != None 
                         and Window.Customer["payment"]["payment_response"] in [1,2]):
                             if(Window.Customer["payment"]["payment_response"] == 1 and "PAYMENT" in TopLevel.WINDOWS):
-                                #cash
                                 TopLevel.WINDOWS.remove("PAYMENT")
                                 window = TopLevel("payment")
                                 window.geometry("500x250")
@@ -616,7 +806,14 @@ class Window(Tk):
                                     window.window_close()
                                     showinfo("Customer Registration Data", "Data has been recorded") 
 
-                                btn = Button(window, text='Submit',width=20,bg='brown',fg='black', command=get_cash_payment)
+                                btn = Button(
+                                    window,
+                                    text='Submit',
+                                    width=20,
+                                    bg='brown',
+                                    fg='black',
+                                    command=get_cash_payment
+                                )
                                 btn.place(x=140,y=160)
                                 window.wait_for_close()
 
@@ -665,7 +862,14 @@ class Window(Tk):
                                     window_main.window_close()
                                     showinfo("Customer Registration Data", "Data has been recorded")
 
-                                btn = Button(window, text='Submit',width=20,bg='brown',fg='black', command=get_bank_payment)
+                                btn = Button(
+                                    window,
+                                    text='Submit',
+                                    width=20,
+                                    bg='brown',
+                                    fg='black',
+                                    command=get_bank_payment
+                                )
                                 btn.place(x=140,y=240)
                                 window.wait_for_close()
 
@@ -682,18 +886,23 @@ class Window(Tk):
         except Exception as error:
             Utils.logger('warn', error)
 
+    """
+    Closes the application if 'Yes'
+    """
     def close(self):
         answer = askokcancel(
             title='Confirmation',
             message='Close Grocer Simulator?',
             icon=WARNING
         )
-
-        #closes the application if 'Yes'
         if(answer):
             self.running = False
+    """
+    Opens the Webpage defined
+    in WEBBPAGE
+    """
     def open_web(self):
-        webbrowser.open('https://github.com/Keenan-Faure/Boot-Dev', new=0)  
+        webbrowser.open(WEBPAGE, new=0)  
 
 # Main function
 def main():

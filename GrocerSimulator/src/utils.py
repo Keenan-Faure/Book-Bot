@@ -70,6 +70,18 @@ class Utils:
                 Path.unlink(ptf)
         with open(save_path, 'w') as json_file:
             json.dump(data, json_file)
+
+    @staticmethod
+    def export_product_data(data):
+        CUR_DIR = Path(__file__).parent.absolute()
+        save_path = CUR_DIR / 'window/productDump.json'
+        if(Path(CUR_DIR / 'window/productDump.json') == True):
+            ptf = open(save_path)
+            path = Path(ptf)
+            if(path.is_file() == True):
+                Path.unlink(ptf)
+        with open(save_path, 'w') as json_file:
+            json.dump(data, json_file)
     
     """
     imports the contents of the customer.json file
@@ -88,7 +100,22 @@ class Utils:
             return {}
         except Exception as error:
             Utils.logger('warn', error)
-            return {} 
+            return {}
+        
+    @staticmethod
+    def import_product_data():
+        try:
+            CUR_DIR = Path(__file__).parent.absolute()
+            file_path = open(CUR_DIR / 'window/productDump.json')
+            data = json.load(file_path)
+            file_path.close()
+            return data
+        except FileNotFoundError as fnf_error:
+            Utils.logger('error', "File not found | " + fnf_error)
+            return {}
+        except Exception as error:
+            Utils.logger('warn', error)
+            return {}
     
     """
     returns the contents of the api.json file

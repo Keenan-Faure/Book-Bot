@@ -1,7 +1,6 @@
 import requests
 from requests.exceptions import HTTPError
 from pathlib import Path
-import json
 import base64
 import sys, os
 

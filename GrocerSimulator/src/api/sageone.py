@@ -1,7 +1,6 @@
 import requests
 from requests.exceptions import HTTPError
 from pathlib import Path
-import json
 import base64
 import sys, os
 
@@ -69,3 +68,5 @@ class SageOne:
         base64_bytes = base64.b64encode(credentials_bytes)
         base64_string = base64_bytes.decode("ascii")
         return base64_string
+    
+SageOne.GET()

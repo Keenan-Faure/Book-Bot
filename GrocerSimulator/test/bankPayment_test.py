@@ -21,13 +21,13 @@ class BankPaymentTest(unittest.TestCase):
             bank,
         )
 
-        self.assertEqual(bankPayment.get_balance(), 1246.90)
+        self.assertEqual(bankPayment.get_amount(), 1246.90)
         self.assertEqual(bankPayment.get_bank().get_name(), "TestBankName")
         self.assertEqual(bankPayment.get_bank().get_branch_id(), 98728)
         self.assertEqual(bankPayment.get_bank().get_telephone(), "0810980987")
 
         bankPayment.withdraw(1200.00)
-        self.assertEqual(bankPayment.get_balance(), 46.90)
+        self.assertEqual(bankPayment.get_amount(), 46.90)
 
         try:
             bankPayment.withdraw(50)
@@ -35,7 +35,7 @@ class BankPaymentTest(unittest.TestCase):
             print(error)
 
         bankPayment.deposit(1200)
-        self.assertEqual(bankPayment.get_balance(), 1246.90)
+        self.assertEqual(bankPayment.get_amount(), 1246.90)
 
 
         try:

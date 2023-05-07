@@ -60,7 +60,7 @@ class Utils:
     writes out the `data` to a customer.json file
     """
     @staticmethod
-    def export_data(data):
+    def export_data(data: dict):
         CUR_DIR = Path(__file__).parent.absolute()
         save_path = CUR_DIR / '../config/customer.json'
         if(Path(CUR_DIR / '../config/customer.json') == True):
@@ -72,7 +72,7 @@ class Utils:
             json.dump(data, json_file)
 
     @staticmethod
-    def export_product_data(data):
+    def export_product_data(data: dict):
         CUR_DIR = Path(__file__).parent.absolute()
         save_path = CUR_DIR / 'window/productDump.json'
         if(Path(CUR_DIR / 'window/productDump.json') == True):

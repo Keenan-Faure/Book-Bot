@@ -38,7 +38,7 @@ class ProductTest(unittest.TestCase):
         self.assertEqual(customer.get_address().get_country(), "CountrySouth")
 
         #payment
-        self.assertEqual(customer.get_payment_method().get_cash(), 1500)
+        self.assertEqual(customer.get_payment_method().get_amount(), 1500)
         self.assertEqual(customer.get_payment_method().get_cash_owner(), "first_name last_name")
         
 if __name__ == "__main__":

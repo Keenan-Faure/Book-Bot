@@ -16,7 +16,7 @@ class ProductTest(unittest.TestCase):
         self.assertEqual(product.get_price(), 55.0)
         self.assertEqual(product.get_vendor(), "")
 
-        product = Product("SKU", "I am a title", "1500", "Stock2Shop")
+        product = Product("SKU", "I am a title", "1500", "0", "Stock2Shop")
         self.assertEqual(product.get_code(), "SKU")
         self.assertEqual(product.get_title(), "I am a title")
         self.assertEqual(product.get_qty(), 1500)

@@ -1,5 +1,4 @@
 API.json
--
 #
 
 Contains different sections for each connector (vendor) `sageOne` and `wooCom` respectively
@@ -28,7 +27,6 @@ The Sage One and WooCommerce connectors uses pythons `request` module to retriev
 Please place a generous amount in the .json file, but please note the program window only allows a certain amount as it is an absolute height not respective to the elements inside.
 
 Config.json
--
 #
 
 This file will need to be configured with the credentials needed to connect to MySQL on the local machine.
@@ -40,7 +38,6 @@ Note:
     - These are stored inside a `productDump.json` to use inside the program
 
 Customer.json
--
 #
 
 This file is populated when the user of the program enters credentials in the `Featured > Customer`

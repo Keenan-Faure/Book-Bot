@@ -37,7 +37,7 @@ class SageOne:
                                                  str(sage_product["Description"]),
                                                  (sage_product["QuantityOnHand"]),
                                                  (sage_product["PriceInclusive"]),
-                                                 "Sage One Super Market")
+                                                 "Sage One Market")
                         product_data.append(system_product)
             return product_data
         except KeyError as key_error:

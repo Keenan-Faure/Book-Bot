@@ -6,7 +6,6 @@ from pathlib import Path
 from toplevel import *
 import sys, os
 import webbrowser
-import json
 
 CUR_DIR = Path(__file__).parent.absolute()
 sys.path.append(os.path.abspath(CUR_DIR / '../../src'))
@@ -109,23 +108,23 @@ class Window(Tk):
 
     def create_button(self):
         button_start = Button(self, text='Start!', command=self.start_game, activebackground='black', activeforeground='grey', pady=10)
-        button_reset = Button(self, text='Reset', command=self.reset_game, activebackground='black', activeforeground='grey', pady=10)
+        # button_reset = Button(self, text='Reset', command=self.reset_game, activebackground='black', activeforeground='grey', pady=10)
         button_close = Button(self, text='Close', command=self.close, activebackground='black', activeforeground='grey', pady=10)
         button_start.place(x=50, y=75)
-        button_reset.place(x=200, y=75)
+        # button_reset.place(x=200, y=75)
         button_close.place(x=350, y=75)
 
     def add_welcome_text(self, width):
         label = Label(self, text = "Welcome to Grocer Simulator :)", padx=10, pady=10, width=width)
         label.grid(column=0, row=0)
-        label2 = Label(self, text = "Please visit the About", padx=10, pady=0, fg='red', bg='black', width=width)
+        label2 = Label(self, text = "Please visit Featured", padx=10, pady=0, fg='red', bg='black', width=width)
         label.grid(column=1, row=1)
         label.config(font=("system-ui", 18))
         label.pack()
         label2.pack()
     
     def add_image(self):
-        path = "shs.jpeg"
+        path = CUR_DIR / "window/shs.jpeg"
         img = ImageTk.PhotoImage(Image.open(path))
         panel = Label(master=self, image=img)
         panel.image = img
@@ -473,7 +472,6 @@ class Window(Tk):
                         data["grocer_products"] = []
                         for product in Window.Products:
                             data["grocer_products"].append(vars(product))
-                        print(len(Window.Products))
                         Utils.export_product_data(data)
                         window.window_close()
 
@@ -485,7 +483,7 @@ class Window(Tk):
                         showinfo("Order Error", str(error))
                 landing_label = Label(
                     window,
-                    text = "Available Products | " + str(Window.Customer["payment"]["amount"]),
+                    text = "Available Products | " + str(round(Window.Customer["payment"]["amount"], 2)),
                     padx=10,
                     pady=10,
                     width=115,
@@ -561,7 +559,6 @@ class Window(Tk):
                 buyable_header.place(x=AMOUNT_BUY_X_POS, y=70)
 
                 import_data = Utils.import_product_data()["grocer_products"]
-                print(import_data)
 
                 if(import_data == []):
                     wooProducts = WooCommerce.GET()
@@ -584,10 +581,10 @@ class Window(Tk):
                 for i in range(len(Window.Products)):
                     if(Window.Products[i].get_vendor() == "MySQL Shoppers"):
                         color = "magenta"
-                    elif(Window.Products[i].get_vendor() == "Sage One Super Market"):
+                    elif(Window.Products[i].get_vendor() == "SageOne Market"):
                         color = "white"
-                    elif(Window.Products[i].get_vendor() == "WooCommerce Super Market"):
-                        color = "yellow"
+                    else:
+                        color = "grey"
 
                     code = Label(
                         window,
@@ -903,9 +900,3 @@ class Window(Tk):
     """
     def open_web(self):
         webbrowser.open(WEBPAGE, new=0)  
-
-# Main function
-def main():
-    win = Window(460, 515, "main", "Grocer Simulator")
-    win.wait_for_close()
-main()

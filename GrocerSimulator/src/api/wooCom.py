@@ -39,7 +39,7 @@ class WooCommerce:
                                                     str(woo_product["products"][0]["sku"]),
                                                     (woo_product["products"][0]["stock_quantity"]),
                                                     (woo_product["products"][0]["price"]),
-                                                    "WooCommerce Super Market")
+                                                    "WooComm Market")
                             product_data.append(system_product)
             return product_data
         except KeyError as key_error:
@@ -63,8 +63,11 @@ class WooCommerce:
     
     @staticmethod
     def encode_credentials(config: dict):
-        credentials = str(config["authentication"]["api_key"]) + ":" + str(config["authentication"]["api_secret"])
-        credentials_bytes = credentials.encode("ascii")        
-        base64_bytes = base64.b64encode(credentials_bytes)
-        base64_string = base64_bytes.decode("ascii")
-        return base64_string
+        if(config != {}):
+            credentials = str(config["authentication"]["api_key"]) + ":" + str(config["authentication"]["api_secret"])
+            credentials_bytes = credentials.encode("ascii")        
+            base64_bytes = base64.b64encode(credentials_bytes)
+            base64_string = base64_bytes.decode("ascii")
+            return base64_string
+        else:
+            return {}

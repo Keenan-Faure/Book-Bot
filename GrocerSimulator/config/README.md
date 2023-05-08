@@ -25,7 +25,7 @@ The Sage One and WooCommerce connectors uses pythons `request` module to retriev
     - For WooCommerce we need the SKUs of exisitng products (simple products should not be private)
     - For SageOne we need the product IDs (Internal Identifiers)
 
-Please place a generous amount in the sheet, but please note the program window only allows a certain amount as it is an absolute height not respective to the elements inside.
+Please place a generous amount in the .json file, but please note the program window only allows a certain amount as it is an absolute height not respective to the elements inside.
 
 Config.json
 -

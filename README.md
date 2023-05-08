@@ -51,10 +51,7 @@ python3 maze.py
 GrocerSimulator
 -
 
-Project is still being developed ლ(╹◡╹ლ)
-
-
+Personal Project 1 (Course no.7)
+It is my first portfolio project. For more information, please click on the folder and navigate to the README.md file.
 
 (ﾉ*ФωФ)ﾉ **Thank you for reading** (ﾉ*ФωФ)ﾉ
-
-

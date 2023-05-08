@@ -60,6 +60,6 @@ python3 src/main.py
 Enabling SageOne and WooCommerce Vendors:
 -
 
-These vendors require specific and private information. Please visit the `api.json` file inside `src/api` folder
+These vendors require specific and private information. Please visit the `api.json` file inside `src/api` folder and view it's structure.
 
-Please visit the respective README.md files on how to get them started.
+If you are confused with the structure kindly visit the README.md files on how to get them started.

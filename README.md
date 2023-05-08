@@ -23,7 +23,7 @@ python3 main.py
 MazeSolver
 -
 
-This product takes the following into consideration:
+This project takes the following into consideration:
 - math algorithms
 - searching algorithms like BFS and DFS
 - unit tests

@@ -1,0 +1,29 @@
+{
+    "sageOne":
+    {
+        "authentication": 
+        {
+            "username": "",
+            "password": "",
+            "companyID": "",
+            "apiKey": ""
+        },
+        "sage_product": 
+        [
+        
+        ]
+    },
+    "wooCom":
+    {
+        "authentication":
+        {
+            "api_key": "",
+            "api_secret": "",
+            "url": ""
+        },
+        "woo_product":
+        [
+        
+        ]
+    }
+}

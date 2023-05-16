@@ -141,15 +141,17 @@ async function crawlPage(baseUrl, currentURL, pages)
 
         //gets all the urls from the current page
         let urls = getURLsFromHtml(body_html, currentURL);
-        
-        pages = await crawlPage(baseUrl, urls[0], pages);
-
+        while(urls.length > 0)
+        {
+            pages = await crawlPage(baseUrl, urls.pop(), pages);
+        }
         return pages;
     }
     catch(Error)
     {
         console.log(Error.message);
     }
+    return pages;
 }
 
 module.exports = {

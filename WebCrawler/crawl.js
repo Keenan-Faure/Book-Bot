@@ -60,12 +60,16 @@ function normalizeURL(url)
  */
 function getURLsFromHtml(htmlBody, baseURL)
 {
-    dom = new JSDOM(htmlBody);
-    urls = dom.window.document.querySelectorAll('a');
-    urlList = [];
+    let dom = new JSDOM(htmlBody);
+    let urls = dom.window.document.querySelectorAll('a');
+    let urlList = [];
 
     for(let i = 0; i < urls.length; ++i)
     {
+        if(urls[i].href.charAt(urls[i].href.length-1) == "/")
+        {
+            urls[i].href = urls[i].href.substring(0, urls[i].href.length - 1);
+        }
         //check if the first char is forward slash
         if(urls[i].href.charAt(0) == "/")
         {
@@ -79,10 +83,6 @@ function getURLsFromHtml(htmlBody, baseURL)
         else if(urls[i].href.slice(0,7) == "http://")
         {
             urlList.push(urls[i].href);
-        }
-        else
-        {
-            console.log("Error | " + urls[i].href + " is not a URL");
         }
     }
     return urlList;
@@ -100,21 +100,14 @@ async function crawlPage(baseUrl, currentURL, pages)
     {
         let current_url = new URL(currentURL);
         let base_url = new URL(baseUrl);
-
-        console.log('Current URL | ' + currentURL);
-        console.log('Current URL hostname | ' + current_url.hostname);
-        console.log('base URL | ' + baseUrl);
-        console.log('base URL hostname | ' + base_url.hostname);
-
         if(current_url.hostname != base_url.hostname)
         {
             return pages;
         }
         let current_url_norm = normalizeURL(current_url);
-        console.log('Normalized URL | ' + current_url_norm);
         if(Object.keys(pages).includes(current_url_norm))
         {
-            pages.current_url_norm ++;
+            pages[current_url_norm] = pages[current_url_norm] + 1;
             return pages;
         }
         const response = await fetch(currentURL,
@@ -129,13 +122,13 @@ async function crawlPage(baseUrl, currentURL, pages)
         if(!response.ok)
         {
             console.log(response.status + " | Error Occured while trying to fetch");
-            return;
+            return pages;
         }
         headersString = response.headers.get('content-type');
         if(!headersString.includes("text/html"))
         {
             console.log("Unexpected content-type");
-            return;
+            return pages;
         }
         body_html = await response.text();
 
@@ -143,17 +136,21 @@ async function crawlPage(baseUrl, currentURL, pages)
         let urls = getURLsFromHtml(body_html, currentURL);
         while(urls.length > 0)
         {
+            //append new url to page and call it with crawlPage
+            if(!Object.keys(pages).includes(current_url_norm))
+            {
+                pages[current_url_norm] = 1;
+            }
             pages = await crawlPage(baseUrl, urls.pop(), pages);
         }
         return pages;
     }
     catch(Error)
     {
-        console.log(Error.message);
+        console.log("Crawl Error | " + Error.message);
+        return pages;
     }
-    return pages;
 }
-
 module.exports = {
     normalizeURL,
     getURLsFromHtml,

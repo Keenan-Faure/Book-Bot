@@ -1,18 +1,24 @@
 const { crawlPage } = require('./crawl.js');
+const { printReport } = require('./printReport.js');
 
-if((process.argv).length > 3)
+async function main()
 {
-    console.log("Too many arguments");
-    process.exit();
+    if((process.argv).length > 3)
+    {
+        console.log("Too many arguments");
+        process.exit();
+    }
+    else if((process.argv).length < 3)
+    {
+        console.log("Too few arguments");
+        process.exit();
+    }
+    else if((process.argv).length == 3)
+    {
+        let argument = process.argv[2];
+        console.log("Starting the crawler application at " + argument);
+        result = await crawlPage(argument, argument, {});
+        printReport(result);
+    }
 }
-else if((process.argv).length < 3)
-{
-    console.log("Too few arguments");
-    process.exit();
-}
-else if((process.argv).length == 3)
-{
-    let argument = process.argv[2];
-    console.log("Starting the crawler application at " + argument);
-    console.log(crawlPage(argument, argument, {}));
-}
+main()

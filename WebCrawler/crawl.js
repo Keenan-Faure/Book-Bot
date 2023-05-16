@@ -1,5 +1,6 @@
 const { url } = require('inspector');
-const { JSDOM } = require('jsdom')
+const { JSDOM } = require('jsdom');
+const { isArray } = require('util');
 
 /**
  * Normalizes a url and returns it
@@ -99,16 +100,24 @@ async function crawlPage(baseUrl, currentURL, pages)
     {
         let current_url = new URL(currentURL);
         let base_url = new URL(baseUrl);
+
+        console.log('Current URL | ' + currentURL);
+        console.log('Current URL hostname | ' + current_url.hostname);
+        console.log('base URL | ' + baseUrl);
+        console.log('base URL hostname | ' + base_url.hostname);
+
         if(current_url.hostname != base_url.hostname)
         {
             return pages;
         }
         let current_url_norm = normalizeURL(current_url);
+        console.log('Normalized URL | ' + current_url_norm);
         if(Object.keys(pages).includes(current_url_norm))
         {
             pages.current_url_norm ++;
+            return pages;
         }
-        const response = await fetch(current_url_norm,
+        const response = await fetch(currentURL,
         {
             method: 'GET',
             mode: 'cors',
@@ -129,8 +138,11 @@ async function crawlPage(baseUrl, currentURL, pages)
             return;
         }
         body_html = await response.text();
+
+        //gets all the urls from the current page
         let urls = getURLsFromHtml(body_html, currentURL);
-        pages = crawlPage(baseUrl, urls[0] , crawlPage(baseUrl, urls[0], pages));
+        
+        pages = await crawlPage(baseUrl, urls[0], pages);
 
         return pages;
     }

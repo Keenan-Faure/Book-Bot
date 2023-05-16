@@ -14,5 +14,5 @@ else if((process.argv).length == 3)
 {
     let argument = process.argv[2];
     console.log("Starting the crawler application at " + argument);
-    console.log(await crawlPage(argument, argument, {}));
+    console.log(crawlPage(argument, argument, {}));
 }

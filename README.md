@@ -54,4 +54,9 @@ GrocerSimulator
 Personal Project 1 (Course no.7)
 It is my first portfolio project. For more information, please click on the folder and navigate to the README.md file.
 
+Web Crawler
+-
+
+First Javascript Project. Please navigate to the README.md file inside the resepctive folder for more information.
+
 (ﾉ*ФωФ)ﾉ **Thank you for reading** (ﾉ*ФωФ)ﾉ

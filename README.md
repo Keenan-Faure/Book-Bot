@@ -57,6 +57,6 @@ It is my first portfolio project. For more information, please click on the fold
 Web Crawler
 -
 
-First Javascript Project. Please navigate to the README.md file inside the resepctive folder for more information.
+First Javascript Project. Please navigate to the README.md file inside the respective folder for more information.
 
 (ﾉ*ФωФ)ﾉ **Thank you for reading** (ﾉ*ФωФ)ﾉ

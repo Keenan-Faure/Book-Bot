@@ -8,9 +8,7 @@ Prerequistes
 
 - `install npm`
 
-- `install npm install jest --save-dev`
-
-- `npm install jsdom`
+Once you navigated to root of directory (`./WebCrawler`) then run `npm install` uses package.json to install packages 
 
 How to run application
 -

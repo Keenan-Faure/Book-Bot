@@ -34,7 +34,7 @@ ws.onmessage = (message) =>
         document.getElementById('messages').appendChild(msgDiv);
     }
 }
-const form = document.getElementById('msgForm');
+const form = document.getElementById('form');
 form.addEventListener('submit', (event) =>
 {
     event.preventDefault();

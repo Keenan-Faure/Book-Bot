@@ -1,6 +1,7 @@
-import { createServer } from 'http';
-import staticHandler from 'serve-handler';
-import ws, { WebSocketServer } from 'ws';
+const { createServer } = require('http');
+const staticHandler = require('serve-handler');
+const { WebSocketServer } = require('ws');
+const ws = require('ws');
 
 //serves a public folder named `public`
 const server = createServer((req, res) =>

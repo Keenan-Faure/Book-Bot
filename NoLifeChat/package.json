@@ -1,6 +1,5 @@
 {
   "name": "nolifechat",
-  "type": "module",
   "version": "1.0.0",
   "description": "Live Chat System",
   "main": "server.js",

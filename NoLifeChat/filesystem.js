@@ -1,52 +1,51 @@
-import { appendFile, unlink, readFile, createReadStream, existsSync } from 'fs';
-import * as readline from 'node:readline/promises';
+const { appendFile, unlink } = require('fs/promises');
+const { existsSync, createReadStream } = require('fs');
+const readline = require('node:readline/promises');
+
+let FOLDER_NAME = 'chat_history/';
 
 /**
  * writes messages to a file for a user
  * @param {String} user 
  * @param {String} message 
  */
-function updateHistory(user, message)
+async function updateHistory(user, message)
 {
-    path = 'history/' + user.toLowerCase() + '.log';
-    if(existsSync(path))
+    let path = FOLDER_NAME + user.toLowerCase() + '.log';
+    await appendFile(path, message + "\n", function (error)
     {
-        appendFile(path, message, function (error)
+        if(error)
         {
-            if(error)
-            {
-                throw error;
-            }
-            console.log('Updated!');
-        });
-    }
-    else
-    {
-        console.log("I/O Error | " + path + " does not exist")
-    }
+            throw error;
+        }
+        logger("info", "file at " + path + " was UPDATED")
+    });
+    return true;
 }
 
 /**
  * Deletes the message history file for a user
  * @param {String} user 
  */
-function deleteHistory(user)
+async function deleteHistory(user)
 {
-    path = 'history/' + user.toLowerCase() + '.log';
+    let path = FOLDER_NAME + user.toLowerCase() + '.log';
     if(existsSync(path))
     {
-        unlink(path, function (error)
+        await unlink(path, function (error)
         {
             if(error)
             {
                 throw error;
             }
-            console.log('File deleted!');
         });
+        logger("info", "file at " + path + " was DELETED");
+        return true;
     }
     else
     {
-        console.log("I/O Error | " + path + " does not exist")
+        logger("I/O Error", path + " does not exist");
+        return false;
     }
 }
 
@@ -55,41 +54,88 @@ function deleteHistory(user)
  * @param {String} user
  * @param {Strig} message
  */
-function deleteMessage(user, message)
+async function deleteMessage(user, message)
 {
-    path = 'history/' + user.toLowerCase() + '.log';
+    let messages = [];
+    let path = FOLDER_NAME + user.toLowerCase() + '.log';
     if(existsSync(path))
     {
-        let readLiner = readline.createInterface(
+        messages = await readChatHistory(user, message);
+        await deleteHistory(user, test);
+        for(let i = 0; i < messages.length; ++i)
         {
-            input: createReadStream(path)
-        });
-        readLiner.on('line', function(line)
-        {
-            console.log(line);
-        });
+            await updateHistory(user, messages[i], test);
+        }
+        return true;
     }
     else
     {
-        console.log("I/O Error | " + path + " does not exist")
+        logger("I/O Error", path + " does not exist");
+        return false;
     }
 }
 
 /**
- * Logs messages to the console, in a certain format
- * @param {Sting} message 
- * @param {String} error_type 
+ * Reads the log file saved in system for that user
+ * Ignores the string in message
+ * @param {String} user 
+ * @param {String} message
+ * @returns {Array}
  */
-function logger(message, error_type)
+async function readChatHistory(user, ignoreText=false, message)
 {
-    
+    let path = FOLDER_NAME + user.toLowerCase() + '.log';
+    if(existsSync(path))
+    {
+        let messages = [];
+        const fileStream = createReadStream(path);
+        const rl = readline.createInterface(
+        {
+            input: fileStream,
+            crlfDelay: Infinity,
+        });
+        for await (const line of rl)
+        {
+            if(!ignoreText)
+            {
+                if(line.toLowerCase() != message.toLowerCase())
+                {
+                    messages.push(line);
+                }
+            }
+            else
+            {
+                messages.push(line);
+            }
+        }
+        return messages;
+    }
+    else
+    {
+        return [];
+    }
+} 
+
+/**
+ * Logs messages to the console, in the format
+ * `[AppName] [type] message | date/time stamp`
+ * @param {Sting} message 
+ * @param {String} type 
+ */
+function logger(type, message)
+{
+    console.log("[NoLifeChat] [" + type + "]" + " " + message + " | " + new Date());
 }
 
-export default {
-    deleteMessage,
+//make styles for the index.html
+//make extra buttons and link them with the functions here
+
+module.exports = {
+    logger,
     deleteHistory,
-    updateHistory
+    deleteMessage,
+    updateHistory,
+    readChatHistory
 }
 
-deleteMessage('keenan', "Hey man how you doing");
 

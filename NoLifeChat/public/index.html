@@ -18,11 +18,21 @@
             <input type="submit" class="btn" value="Send">
         </form>
     </div>
-    <script type="text/javascript" src="./users.json"></script>
     <script src="../client.js"></script>
-    <script>query_url(window.location.href);</script>
-    <script type="application/javascript">
-        password = (prompt("Please enter your password:"));
+    <script>
+        async function run()
+        {
+            const response = await query_url(window.location.href);
+            if(response != true)
+            {
+                remove_dom(response);
+            }
+            else
+            {
+                alert("Login Successful");
+            }
+        }
+        run();
     </script>
 </body>
 </html>

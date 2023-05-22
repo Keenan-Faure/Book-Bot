@@ -20,18 +20,6 @@
     </div>
     <script src="../client.js"></script>
     <script>
-        async function run()
-        {
-            const response = await query_url(window.location.href);
-            if(response != true)
-            {
-                remove_dom(response);
-            }
-            else
-            {
-                alert("Login Successful");
-            }
-        }
         run();
     </script>
 </body>

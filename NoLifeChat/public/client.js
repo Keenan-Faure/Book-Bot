@@ -63,11 +63,11 @@ async function query_url(url)
                     if(keys.includes(param[1]))
                     {
                         password = (prompt("Please enter your password:"));
-                        return (password == file[param[1]]) ? true : "incorrect password";
+                        return (password == file[param[1]]) ? true : 'Incorrect password, please refresh page'
                     }
-                    return "incorrect password";
+                    return 'Incorrect password, please refresh page';
                 }
-                return "incorrect param key, expected 'user'";
+                return "incorrect param key, expected 'user', please refresh";
             }
         }
         return "no query params";
@@ -82,7 +82,23 @@ async function get_file()
 }
 
 /**
- * 
+ * Main function that runs
+ */
+async function run()
+{
+    const response = await query_url(window.location.href);
+    if(response != true)
+    {
+        remove_dom(response);
+    }
+    else
+    {
+        alert("Login Successful!");
+    }
+}
+
+/**
+ * removes the DOM if the password is incorrect
  * @param {String} message 
  */
 function remove_dom(message)

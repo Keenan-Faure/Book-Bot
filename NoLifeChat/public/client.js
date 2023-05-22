@@ -42,3 +42,40 @@ form.addEventListener('submit', (event) =>
     ws.send(message);
     document.getElementById('inputBox').value = ''
 })
+
+async function query_url(url)
+{
+    const urlObj = new URL(url);
+    let query_params = urlObj.search;
+    if(query_params != "")
+    {
+        query_params = query_params.slice(1, -1);
+        let queries = query_params.split("&");
+        if(queries.length > 0)
+        {
+            for(let i = 0; i < queries.length; ++i)
+            {
+                let param = queries[i].split("=");
+                if(param[0] == "user")
+                {
+                    console.log(await get_file());
+                    const keys = Object.keys();
+                    if(param[0] in keys)
+                    {
+                        console.log("yep");
+                        return true;
+                    }
+                }
+                return "user param not specified";
+            }
+        }
+        return "No query params found";
+    }
+    return "No query params found";
+}
+
+async function get_file()
+{
+    let response = await fetch('./users.json');
+    return response.json();
+}

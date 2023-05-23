@@ -15,7 +15,7 @@ How to run application
 
 Navigate to the folder and run the below command
 ```
-npm run start $port
+npm start $port
 ```
 
 where `$port` is the port number that we will be using.

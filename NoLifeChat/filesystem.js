@@ -6,8 +6,8 @@ let FOLDER_NAME = 'chat_history/';
 
 /**
  * writes messages to a file for a user
- * @param {String} user 
- * @param {String} message 
+ * @param {String} user
+ * @param {String} message
  */
 async function updateHistory(user, message)
 {

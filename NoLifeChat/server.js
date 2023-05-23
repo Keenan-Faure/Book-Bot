@@ -13,12 +13,10 @@ const server = createServer((req, res) =>
 const wss = new WebSocketServer({ server })
 wss.on('connection', (client) =>
 {
-    console.log('Client connected !')
     client.on('message', (msg) =>
     {
-        console.log(`Message:${msg}`);
-        broadcast(msg)
-    })
+        broadcast(msg);
+    });
 })
 
 //sends the message to clients currently connected
@@ -28,7 +26,7 @@ function broadcast(msg)
     {
         if (client.readyState === ws.OPEN)
         {
-            client.send(msg)
+            client.send(msg);
         }
     }
 }

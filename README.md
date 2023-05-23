@@ -59,4 +59,9 @@ Web Crawler
 
 First Javascript Project. Please navigate to the README.md file inside the respective folder for more information.
 
+NoLifeChat
+-
+
+Personal Javascript Project. It is a simple chat. Head to the README.md inside the file which contains further information.
+
 (ﾉ*ФωФ)ﾉ **Thank you for reading** (ﾉ*ФωФ)ﾉ

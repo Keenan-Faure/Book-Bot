@@ -28,10 +28,10 @@ The program uses a `users.json` file inside the `public` folder to allow for cer
 The format of the `users.json` file is as follows:
 
 ```
-{{username}}: {{password}}
+{{username}}:{{password}}
 ```
 
-The username is specified by entering `user={{username}}` in the browser in the url below:
+The username is specified by entering `?user={{username}}` in the browser in the url below:
 
 ```
 http://localhost:$port/

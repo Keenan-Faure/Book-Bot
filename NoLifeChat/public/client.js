@@ -72,7 +72,7 @@ async function query_url(url)
         }
         return "no query params";
     }
-    return "http://localhost:{{port}}/?{{user}}={{password}}"
+    return "http://localhost:{{port}}/?{{user}}={{username}}"
 }
 
 function get_user()

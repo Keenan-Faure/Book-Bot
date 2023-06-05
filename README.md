@@ -20,48 +20,4 @@ BookBot
 python3 main.py
 ```
 
-MazeSolver
--
-
-This project takes the following into consideration:
-- math algorithms
-- searching algorithms like BFS and DFS
-- unit tests
-- resursive functions
-- importing python modules
-- tkinter to display
-- Object Orientated Programming (OOP)
-
-Code execution process (what and when it executes) has been commented out.
-
-**Adjusting values of maze and cells**:
-
-- You may increase or decrease the width, height of the `win` Window element, but keep in mind that in decreasing the size of the window the amount of cells to display would drop as well
-
-- You may adjust the size of the cells when initializing the `Maze` class. Keep in mind point above
-
-**How to run**:
-
-- Navigate to the directory of the file then:
-
-```
-python3 maze.py
-```
-
-GrocerSimulator
--
-
-Personal Project 1 (Course no.7)
-It is my first portfolio project. For more information, please click on the folder and navigate to the README.md file.
-
-Web Crawler
--
-
-First Javascript Project. Please navigate to the README.md file inside the respective folder for more information.
-
-NoLifeChat
--
-
-Personal Javascript Project. It is a simple chat. Head to the README.md inside the file which contains further information.
-
 (ﾉ*ФωФ)ﾉ **Thank you for reading** (ﾉ*ФωФ)ﾉ
